@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/OldKingAllant/RistoCats/issues"
   },
-  "homepage": "https://github.com/OldKingAllant/RistoCats#readme"
+  "homepage": "https://github.com/OldKingAllant/RistoCats#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "supertest": "^7.0.0"
+  }
 }
