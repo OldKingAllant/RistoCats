@@ -6,11 +6,14 @@ const server = express()
 const server_port = process.env.PORT;
 const server_path = __dirname;
 
+let verify_token = require('./backend/login/verify')
+
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json())
 
 let users = require('./backend/routers/users');
-
+let menu = require('./backend/routers/menu')
+let orders = require('./backend/routers/orders')
 
 server.get('/alive', (req, resp) => {
     resp.status(200)
@@ -18,7 +21,42 @@ server.get('/alive', (req, resp) => {
         .json({"status": "running"});
 })
 
+server.use((req, resp, next) => {
+    const route = req.path;
+    if(route == '/users/login' || route == '/users/verify' || route == '/alive') {
+        next();
+        return;
+    }
+
+    if(req.headers['authorization'] == null) {
+        resp.status(401)
+        .json({"valid": false, "reason": "missing token"});
+        return;
+    }
+
+    let authorization = req.headers['authorization'].split(' ');
+    let type = authorization[0];
+
+    if(type !== 'Bearer') {
+        resp.status(401)
+        .json({"valid": false, "reason": "missing token"});
+        return;
+    }
+
+    let token_or_err = verify_token(authorization[1], process.env.JWT_SECRET);
+
+    if(token_or_err == false) {
+        resp.status(401)
+        .json({"valid": false, "reason": "invalid token"});
+        return;
+    }
+
+    next();
+})
+
 server.use('/users', users)
+server.use('/menu', menu)
+server.use('/orders', orders)
 
 server.use((err, req, resp, next) => {
     console.log(`Internal error: ${err.message}`);

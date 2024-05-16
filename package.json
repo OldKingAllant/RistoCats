@@ -21,6 +21,7 @@
     "expect": "^29.7.0",
     "express": "^4.19.2",
     "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
     "should": "^13.2.3",
     "supertest": "^7.0.0"
   }
