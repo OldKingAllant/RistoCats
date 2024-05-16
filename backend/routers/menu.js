@@ -3,7 +3,13 @@ let menu = express.Router()
 
 menu.get('/overview', (req, resp, next) => {
     try {
-        const generic_dish = {"name": "Pasta Pomodoro", "image": "", "ingredients": "", "price": 10.0};
+        if(req.query.lang == undefined) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "missing lang"});
+            return;
+        }
+        const generic_dish = {"id": 0, "name": "Pasta Pomodoro", "image": "", "ingredients": "", "price": 10.0};
 
         resp.status(200)
             .contentType('application/json')
@@ -13,12 +19,19 @@ menu.get('/overview', (req, resp, next) => {
     }
 })
 
-menu.get('/:name/properties', (req, resp, next) => {
+menu.get('/:id/properties', (req, resp, next) => {
     try {
-        if(req.params.name == null || req.params.name == undefined) {
+        if(req.params.id == null || req.params.id == undefined) {
             resp.status(400)
             .contentType('application/json')
-            .json({"valid": false, "reason": "missing dish name"});
+            .json({"valid": false, "reason": "missing dish id"});
+            return;
+        }
+
+        if(req.query.lang == undefined) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "missing lang"});
             return;
         }
 
@@ -27,7 +40,7 @@ menu.get('/:name/properties', (req, resp, next) => {
 
         resp.status(200)
         .contentType('application/json')
-        .json({"name": req.params.name, "calories": calories, "allergens": allergens});
+        .json({"id": req.params.id, "name": "any", "calories": calories, "allergens": allergens});
     } catch(except) {
         next(except);
     }

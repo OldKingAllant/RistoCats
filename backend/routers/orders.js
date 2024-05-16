@@ -2,7 +2,7 @@ const express = require('express')
 let orders = express.Router()
 
 function verify_dish(dish) {
-    if(dish.name == undefined || dish.quantity == undefined || dish.infos == undefined) return false;
+    if(dish.id == undefined || dish.quantity == undefined || dish.infos == undefined) return false;
     //Verify against database
     return true;
 }

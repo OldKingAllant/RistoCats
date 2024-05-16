@@ -77,6 +77,7 @@ describe('GET /menu/overview', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
         .get('/menu/overview')
+        .query({"lang": "it"})
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
 
@@ -88,6 +89,7 @@ describe('GET /menu/overview', async() => {
     it('Responds with 401, invalid token', async() => {
         const resp = await request(server)
         .get('/menu/overview')
+        .query({"lang": "it"})
         .set('Authorization', 'Bearer something')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -100,6 +102,7 @@ describe('GET /menu/overview', async() => {
     it('Responds with list of dishes', async() => {
         const resp = await request(server)
         .get('/menu/overview')
+        .query({"lang": "it"})
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -116,6 +119,7 @@ describe('GET /menu/overview', async() => {
             expect(element).toHaveProperty('image');
             expect(element).toHaveProperty('ingredients');
             expect(element).toHaveProperty('price');
+            expect(element).toHaveProperty('id');
 
             /*expect(element.name).toBeInstanceOf(String);
             expect(element.image).toBeInstanceOf(String);
@@ -138,10 +142,11 @@ describe('GET /menu/<dish>/properties', async() => {
     })
 
     it("Responds with dish properties", async() => {
-        const wanted_dish = "any";
+        const wanted_dish = 0;
 
         const resp = await request(server)
         .get(`/menu/${wanted_dish}/properties`)
+        .query({"lang": "it"})
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -182,7 +187,7 @@ describe('POST /orders/place', async() => {
     })
 
     it("Responds 200, order placed", async() => {
-        let dish = {"name": "any", "quantity": 10, "infos": "blah blah blah"};
+        let dish = {"id": 0, "quantity": 10, "infos": "blah blah blah"};
 
         const resp = await request(server)
         .post('/orders/place')
