@@ -162,10 +162,12 @@ describe('GET /menu/<dish>/properties', async() => {
     })
 })
 
-describe('POST /orders/place', async() => {
+describe('POST /orders/<table>/place', async() => {
+    const table_id = 0;
+
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .get('/orders/place')
+        .post(`/orders/${table_id}/place`)
         .set('Authorization', 'Bearer something')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -176,7 +178,7 @@ describe('POST /orders/place', async() => {
 
     it("Responds with 400, invalid dish list", async() => {
         const resp = await request(server)
-        .post('/orders/place')
+        .post(`/orders/${table_id}/place`)
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
@@ -190,7 +192,7 @@ describe('POST /orders/place', async() => {
         let dish = {"id": 0, "quantity": 10, "infos": "blah blah blah"};
 
         const resp = await request(server)
-        .post('/orders/place')
+        .post(`/orders/${table_id}/place`)
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')

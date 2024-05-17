@@ -7,12 +7,19 @@ function verify_dish(dish) {
     return true;
 }
 
-orders.post('/place', (req, resp, next) => {
+orders.post('/:tableid/place', (req, resp, next) => {
     try {
         if(req.body == undefined || req.body == null || req.body.dishes == undefined) {
             resp.status(400)
             .contentType('application/json')
             .json({"valid": false, "reason": "body empty"})
+            return;
+        }
+
+        if(req.params.tableid == undefined || req.params.tableid == null) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "missing table id"});
             return;
         }
 
