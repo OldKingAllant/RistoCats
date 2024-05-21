@@ -1,13 +1,13 @@
 const express = require('express')
 let orders = express.Router()
 
-function verify_dish(dish) {
+function verify_dish(dish, menu) {
     if(dish.id == undefined || dish.quantity == undefined || dish.infos == undefined) return false;
-    //Verify against database
-    return true;
+    
+    return menu.find((elem) => elem.id == dish.id) != null;
 }
 
-orders.post('/:tableid/place', (req, resp, next) => {
+orders.post('/:tableid/place', async(req, resp, next) => {
     try {
         if(req.body == undefined || req.body == null || req.body.dishes == undefined) {
             resp.status(400)
@@ -30,7 +30,9 @@ orders.post('/:tableid/place', (req, resp, next) => {
             return;
         }
 
-        let all_respect_format = req.body.dishes.every(verify_dish);
+        let menu = await process.db_driver.getMenu();
+
+        let all_respect_format = req.body.dishes.every((elem) => verify_dish(elem, menu));
 
         if(!all_respect_format) {
             resp.status(400)

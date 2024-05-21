@@ -1,6 +1,9 @@
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser');
+const DbDriver = require('./backend/database/driver')
+
+let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
 
 const server = express()
 const server_port = process.env.PORT;
@@ -10,6 +13,21 @@ let verify_token = require('./backend/login/verify')
 
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json())
+
+server.use(async(req, resp, next) => {
+    if(!driver.is_connected) {
+        process.db_driver = driver;
+        try { 
+            await driver.connect();
+            console.log("Database connection established");
+         }
+        catch(err) {
+            console.log("Database connection failed");
+        }
+    }
+
+    next();
+})
 
 let users = require('./backend/routers/users');
 let menu = require('./backend/routers/menu')

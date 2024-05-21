@@ -6,6 +6,7 @@ const jest = require('jest')
 const { default: expect } = require('expect')
 
 let token = "";
+let dish0 = null;
 
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
@@ -120,12 +121,9 @@ describe('GET /menu/overview', async() => {
             expect(element).toHaveProperty('ingredients');
             expect(element).toHaveProperty('price');
             expect(element).toHaveProperty('id');
-
-            /*expect(element.name).toBeInstanceOf(String);
-            expect(element.image).toBeInstanceOf(String);
-            expect(element.ingredients).toBeInstanceOf(String);
-            expect(element.price).toBeInstanceOf(Number);*/
         });
+
+        dish0 = resp.body.dishes[0];
     })
 })
 
@@ -142,7 +140,7 @@ describe('GET /menu/<dish>/properties', async() => {
     })
 
     it("Responds with dish properties", async() => {
-        const wanted_dish = 0;
+        const wanted_dish = dish0.id;
 
         const resp = await request(server)
         .get(`/menu/${wanted_dish}/properties`)
@@ -156,7 +154,7 @@ describe('GET /menu/<dish>/properties', async() => {
         expect(resp.body).toBeInstanceOf(Object);
 
         expect(resp.body).toHaveProperty('name');
-        expect(resp.body.name).toEqual('any');
+        expect(resp.body.name).toEqual(dish0.name);
         expect(resp.body).toHaveProperty('calories');
         expect(resp.body).toHaveProperty('allergens');
     })
@@ -189,7 +187,7 @@ describe('POST /orders/<table>/place', async() => {
     })
 
     it("Responds 200, order placed", async() => {
-        let dish = {"id": 0, "quantity": 10, "infos": "blah blah blah"};
+        let dish = {"id": dish0.id, "quantity": 10, "infos": "blah blah blah"};
 
         const resp = await request(server)
         .post(`/orders/${table_id}/place`)
