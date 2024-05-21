@@ -41,6 +41,20 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
+        let order = {
+            tableid: Number(req.params.tableid),
+            dishes: req.body.dishes
+        };
+
+        let result = process.db_driver.placeOrder(order);
+
+        if(result == null) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "could not insert"});
+            return;
+        }
+
         resp.status(200)
         .contentType('application/json')
         .json({"valid": true})
