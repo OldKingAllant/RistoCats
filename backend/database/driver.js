@@ -53,6 +53,7 @@ class DatabaseDriver {
     }
 
     async placeOrder(order) {
+        order.tags = ["Order"];
         order._id = mongodb.ObjectId.createFromTime(Math.floor(Date.now() / 1000))
         let result = await this.collection.insertOne(order);
 
