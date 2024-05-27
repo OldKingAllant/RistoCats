@@ -7,6 +7,7 @@ const { default: expect } = require('expect')
 
 let token = "";
 let dish0 = null;
+let dish1 = null;
 
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
@@ -195,6 +196,73 @@ describe('POST /orders/<table>/place', async() => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .send({"dishes": [dish]})
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+})
+
+describe('GET /menu/all_dishes', async() => {
+    it("Responds with 401, missing/invalid token", async() => {
+        const resp = await request(server)
+        .get('/menu/all_dishes')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .query({"lang": "it"});
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 200, all dishes", async() => {
+        const resp = await request(server)
+        .get('/menu/all_dishes')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
+        .query({"lang": "it"});
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+        expect(resp.body).toHaveProperty('list');
+
+        console.log(`All dishes: ${resp.body.list.map(JSON.stringify)}`);
+
+        dish1 = resp.body.list[1];
+        expect(resp.body.list.length).toBeGreaterThanOrEqual(2);
+    })
+})
+
+describe('POST /menu/modify', async() => {
+    it("Responds with 401, missing/invalid token", async() => {
+        const resp = await request(server)
+        .post('/menu/modify')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 400, invalid request", async() => {
+        const resp = await request(server)
+        .post('/menu/modify')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
+        .send({"list": [{"invalid": "invalid"}]});
+
+        expect(resp.status).toEqual(400);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 200, menu updated (invert enable property of the second dish)", async() => {
+        const resp = await request(server)
+        .post('/menu/modify')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
+        .send({"list": [{"id": dish1.id, "enable": dish1.enabled ? 'N' : 'Y' }]});
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');

@@ -1,6 +1,7 @@
 const express = require('express')
 const jsonwebtoken = require('jsonwebtoken')
 const verify_token = require('../login/verify')
+const google = require('googleapis')
 
 let router = express.Router();
 
@@ -33,6 +34,16 @@ router.get('/verify', (req, resp, next) => {
     } catch(except) {
         next(except);
     }
+})
+
+router.get('/loginurl', (req, resp, next) => {
+    const url = process.oauth_client.generateAuthUrl({
+        scope: 'https://www.googleapis.com/auth/userinfo.email'
+    })
+
+    resp.status(200)
+    .contentType('application/json')
+    .json({"url": url});
 })
 
 router.post('/login', (req, resp, next) => {

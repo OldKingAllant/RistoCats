@@ -8,6 +8,19 @@ class DatabaseDriver {
         this.is_connected = false;
     }
 
+    extractDishInfo(dish) {
+        return {
+            "id": dish._id,
+            "name": dish.nome,
+            "image": "",
+            "ingredients": dish.desc,
+            "price": 0,
+            "calories": 0,
+            "allergens": "",
+            "enabled": dish.tags.includes('Si')
+        };
+    }
+
     async connect() {
         await this.client.connect();
         this.db = this.client.db(this.dbname);
@@ -22,15 +35,7 @@ class DatabaseDriver {
     async getMenu() {
         let menu = await this.collection.find({ tags: ["Piatto", "Si"] }).toArray();
         return menu.map((entry) => {
-            return {
-                "id": entry._id,
-                "name": entry.nome,
-                "image": "",
-                "ingredients": entry.desc,
-                "price": 0,
-                "calories": 0,
-                "allergens": ""
-            };
+            return this.extractDishInfo(entry);
         })
     }
 
@@ -41,15 +46,7 @@ class DatabaseDriver {
             return null;
         }
 
-        return {
-            "id": dish._id,
-            "name": dish.nome,
-            "image": "",
-            "ingredients": dish.desc,
-            "price": 0,
-            "calories": 0,
-            "allergens": ""
-        };
+        return this.extractDishInfo(dish);
     }
 
     async placeOrder(order) {
@@ -61,6 +58,27 @@ class DatabaseDriver {
             return result.insertedId;
 
         return null;
+    }
+
+    async enableDish(id, enable) {
+        let enable_string = 'Si';
+
+        if(!enable) {
+            enable_string = 'No';
+        }
+
+        let result = await this.collection.updateOne(
+            { _id: new mongodb.ObjectId(id), tags: 'Piatto' }, 
+            { $set: { tags: ['Piatto', enable_string] } }
+        );
+
+        return result.acknowledged && result.modifiedCount == 1;
+    }
+
+    async getAllDishes() {
+        let result = await this.collection.find({ tags: 'Piatto' }).toArray();
+
+        return result.map((dish) => this.extractDishInfo(dish));
     }
 }
 

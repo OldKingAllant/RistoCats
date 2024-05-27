@@ -2,14 +2,27 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser');
 const DbDriver = require('./backend/database/driver')
+const cors = require('cors')
+const google = require('googleapis')
 
 let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
+
+const oauth_client = new google.Auth.OAuth2Client({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    redirectUri: process.env.SERVER_URL + ':' + process.env.PORT + '/users/loginfake'
+})
+
+process.oauth_client = oauth_client;
 
 const server = express()
 const server_port = process.env.PORT;
 const server_path = __dirname;
 
 let verify_token = require('./backend/login/verify')
+
+server.use(cors())
+server.use('/static', express.static(__dirname + '/frontend'))
 
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json())
@@ -32,6 +45,7 @@ server.use(async(req, resp, next) => {
 let users = require('./backend/routers/users');
 let menu = require('./backend/routers/menu')
 let orders = require('./backend/routers/orders')
+let user_pages = require('./backend/frontend_router')
 
 server.get('/alive', (req, resp) => {
     resp.status(200)
@@ -41,7 +55,9 @@ server.get('/alive', (req, resp) => {
 
 server.use((req, resp, next) => {
     const route = req.path;
-    if(route == '/users/login' || route == '/users/verify' || route == '/alive') {
+    if(route == '/users/login' || route == '/users/verify' || route == '/alive' ||
+        route == '/users/loginurl'
+    ) {
         next();
         return;
     }
@@ -75,6 +91,7 @@ server.use((req, resp, next) => {
 server.use('/users', users)
 server.use('/menu', menu)
 server.use('/orders', orders)
+server.use(user_pages)
 
 server.use((err, req, resp, next) => {
     console.log(`Internal error: ${err.message}`);
