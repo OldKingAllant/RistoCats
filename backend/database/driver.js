@@ -55,7 +55,7 @@ class DatabaseDriver {
         let result = await this.collection.insertOne(order);
 
         if(result.acknowledged)
-            return result.insertedId;
+            return result.insertedId.toHexString();
 
         return null;
     }
@@ -79,6 +79,60 @@ class DatabaseDriver {
         let result = await this.collection.find({ tags: 'Piatto' }).toArray();
 
         return result.map((dish) => this.extractDishInfo(dish));
+    }
+
+    async getOrders() {
+        let result = await this.collection.find({tags: 'Order'}).toArray();
+
+        return result;
+    }
+
+    async getOrderDetails(id) {
+        let result = await this.collection.findOne({
+            tags: 'Order', _id: new mongodb.ObjectId(id) });
+
+        return result;
+    }
+
+    async removeDishFromOrder(orderid, dishid, quantity) {
+        let order = await this.getOrderDetails(orderid);
+
+        if(order == null) {
+            return false;
+        }
+
+
+        let dish_index = order.dishes.findIndex((dish) => dish.id == dishid);
+
+        if(dish_index == -1) {
+            return false;
+        }
+
+        let dish_entry = order.dishes[dish_index];
+
+        let filter = { _id: new mongodb.ObjectId(orderid) };
+
+        if(quantity > dish_entry.quantity) {
+            quantity = dish_entry.quantity;
+        }
+
+        dish_entry.quantity -= quantity;
+
+        let result = null;
+
+        if(dish_entry.quantity == 0 && order.dishes.length == 1) {
+            result = await this.collection.deleteOne(filter);
+        } else {
+            if(dish_entry.quantity == 0) {
+                order.dishes.splice(dish_index, 1);
+            }
+
+            result = await this.collection.updateOne(filter, 
+                { $set: {'dishes': order.dishes } }
+            );
+        }
+
+        return result.acknowledged;
     }
 }
 

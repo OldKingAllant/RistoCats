@@ -46,7 +46,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             dishes: req.body.dishes
         };
 
-        let result = process.db_driver.placeOrder(order);
+        let result = await process.db_driver.placeOrder(order);
 
         if(result == null) {
             resp.status(400)
@@ -57,7 +57,60 @@ orders.post('/:tableid/place', async(req, resp, next) => {
 
         resp.status(200)
         .contentType('application/json')
-        .json({"valid": true})
+        .json({"valid": true, "orderid": result})
+    } catch(except) {
+        next(except);
+    }
+})
+
+orders.get('/remaining', async(req, resp, next) => {
+    try {
+        let orders = await process.db_driver.getOrders();
+
+        resp.status(200)
+        .contentType('application/json')
+        .json({"list": orders});
+    } catch(except) {
+        next(except);
+    }
+})
+
+orders.get('/:id/details', async(req, resp, next) => {
+    try {
+        let order = await process.db_driver.getOrderDetails(req.params.id);
+
+        resp.status(200)
+        .contentType('application/json')
+        .json({"order": order});
+    } catch(except) {
+        next(except);
+    }
+})
+
+orders.delete('/:id/dish/:dishid', async(req, resp, next) => {
+    try {
+        let quantity = req.body.quantity;
+
+        if(isNaN(Number(quantity))) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "bad quantity"});
+            return;
+        }
+ 
+        let result = await process.db_driver.removeDishFromOrder(req.params.id, 
+            req.params.dishid, Number(quantity)
+        );
+
+        if(!result) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "remove failed"});
+        } else {
+            resp.status(200)
+            .contentType('application/json')
+            .json({});
+        }
     } catch(except) {
         next(except);
     }

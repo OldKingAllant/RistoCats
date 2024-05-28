@@ -8,6 +8,7 @@ const { default: expect } = require('expect')
 let token = "";
 let dish0 = null;
 let dish1 = null;
+let orderid = null;
 
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
@@ -199,6 +200,9 @@ describe('POST /orders/<table>/place', async() => {
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+        expect(resp.body).toHaveProperty('orderid');
+
+        orderid = resp.body.orderid;
     })
 })
 
@@ -263,6 +267,87 @@ describe('POST /menu/modify', async() => {
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
         .send({"list": [{"id": dish1.id, "enable": dish1.enabled ? 'N' : 'Y' }]});
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+})
+
+describe('GET /orders/remaining', async() => {
+    it("Responds with 401, missing/invalid token", async() => {
+        const resp = await request(server)
+        .get('/orders/remaining')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 200, list of orders", async() => {
+        const resp = await request(server)
+        .get('/orders/remaining')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+})
+
+describe('GET /orders/<id>/details', async() => {
+    it("Responds with 401, missing/invalid token", async() => {
+        const resp = await request(server)
+        .get(`/orders/${orderid}/details`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 200, order details", async() => {
+        const resp = await request(server)
+        .get(`/orders/${orderid}/details`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+})
+
+describe('DELETE /orders/<id>/dish/<dishid>', async() => {
+    it("Responds with 401, missing/invalid token", async() => {
+        const resp = await request(server)
+        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 400, bad quantity", async() => {
+        const resp = await request(server)
+        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(400);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it("Responds with 200, dish removed", async() => {
+        const resp = await request(server)
+        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send({"quantity": 10})
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
