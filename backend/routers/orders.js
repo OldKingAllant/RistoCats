@@ -79,9 +79,15 @@ orders.get('/:id/details', async(req, resp, next) => {
     try {
         let order = await process.db_driver.getOrderDetails(req.params.id);
 
-        resp.status(200)
-        .contentType('application/json')
-        .json({"order": order});
+        if(order == null) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "order does not exist"})
+        } else {
+            resp.status(200)
+            .contentType('application/json')
+            .json({"order": order});
+        } 
     } catch(except) {
         next(except);
     }
