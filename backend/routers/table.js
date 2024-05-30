@@ -3,6 +3,13 @@ let table = express.Router()
 
 table.get('/free', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         let result = await process.db_driver.getFreeTables();
 
         resp.status(200)
@@ -15,6 +22,13 @@ table.get('/free', async(req, resp, next) => {
 
 table.get('/all_tables', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         let result = await process.db_driver.getAllTables();
 
         resp.status(200)
@@ -27,6 +41,13 @@ table.get('/all_tables', async(req, resp, next) => {
 
 table.post('/:id/status', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+        
         if(isNaN(Number(req.params.id))) {
             resp.status(400)
             .contentType('application/json')

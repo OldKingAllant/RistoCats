@@ -46,7 +46,7 @@ router.get('/loginurl', (req, resp, next) => {
     .json({"url": url});
 })
 
-router.post('/login', (req, resp, next) => {
+router.post('/login', async(req, resp, next) => {
     try {
         if(req.body == undefined || req.body == null) {
             resp.status(400)
@@ -63,7 +63,10 @@ router.post('/login', (req, resp, next) => {
         }
 
         const test_mail = "mario.rossi@studenti.unitn.it";
-        const jwt = jsonwebtoken.sign({"mail": test_mail, "google_token": req.body.token}, process.env.JWT_SECRET, 
+        let user = await process.db_driver.getUserByMail(test_mail);
+        const jwt = jsonwebtoken.sign({"mail": test_mail, "google_token": req.body.token, 
+            "role": user.role
+        }, process.env.JWT_SECRET, 
             { expiresIn: process.env.TOKEN_TTL });
 
         resp.status(200)

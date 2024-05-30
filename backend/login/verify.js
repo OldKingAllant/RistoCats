@@ -6,8 +6,7 @@ function verify_mail(payload) {
     }
 
     //Check against database
-
-    return true;
+    return process.db_driver.getUserByMail(payload.mail) != null;
 }
 
 function verify_google_token(payload) {

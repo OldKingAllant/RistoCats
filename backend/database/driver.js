@@ -29,8 +29,12 @@ class DatabaseDriver {
         this.is_connected = true;
     }
 
-    async getUserByMail(mail) {
+    async getUserByMail(email) {
+        let result = await this.collection.findOne({
+            tags: 'User', mail: email
+        });
 
+        return result;
     }
 
     async getMenu() {

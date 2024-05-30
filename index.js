@@ -86,6 +86,8 @@ server.use((req, resp, next) => {
         return;
     }
 
+    req.user_role = token_or_err.role;
+
     next();
 })
 

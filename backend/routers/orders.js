@@ -9,6 +9,13 @@ function verify_dish(dish, menu) {
 
 orders.post('/:tableid/place', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'table') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         if(req.body == undefined || req.body == null || req.body.dishes == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -65,6 +72,13 @@ orders.post('/:tableid/place', async(req, resp, next) => {
 
 orders.get('/remaining', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'kitchen') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         let orders = await process.db_driver.getOrders();
 
         resp.status(200)
@@ -77,6 +91,13 @@ orders.get('/remaining', async(req, resp, next) => {
 
 orders.get('/:id/details', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'kitchen') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         let order = await process.db_driver.getOrderDetails(req.params.id);
 
         if(order == null) {
@@ -95,6 +116,13 @@ orders.get('/:id/details', async(req, resp, next) => {
 
 orders.delete('/:id/dish/:dishid', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'kitchen') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         let quantity = req.body.quantity;
 
         if(isNaN(Number(quantity))) {

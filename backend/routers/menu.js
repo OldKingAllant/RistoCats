@@ -3,6 +3,13 @@ let menu = express.Router()
 
 menu.get('/overview', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'table') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         if(req.query.lang == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -22,6 +29,13 @@ menu.get('/overview', async(req, resp, next) => {
 
 menu.get('/:id/properties', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'table') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         if(req.params.id == null || req.params.id == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -48,6 +62,15 @@ menu.get('/:id/properties', async(req, resp, next) => {
 
 menu.get('/all_dishes', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'dining_hall' &&
+            req.user_role != 'kitchen'
+        ) {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         if(req.query.lang == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -67,6 +90,13 @@ menu.get('/all_dishes', async(req, resp, next) => {
 
 menu.post('/modify', async(req, resp, next) => {
     try {
+        if(req.user_role != 'admin' && req.user_role != 'kitchen') {
+            resp.status(403)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "unauthorized"});
+            return;
+        }
+
         if(req.body.list == undefined) {
             resp.status(400)
             .contentType('application/json')
