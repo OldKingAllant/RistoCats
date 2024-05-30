@@ -17,7 +17,8 @@ class DatabaseDriver {
             "price": 0,
             "calories": 0,
             "allergens": "",
-            "enabled": dish.tags.includes('Si')
+            "enabled": dish.tags.includes('Si'),
+            "statistics": dish.qthistory
         };
     }
 
@@ -133,6 +134,32 @@ class DatabaseDriver {
         }
 
         return result.acknowledged;
+    }
+
+    async getFreeTables() {
+        let result = await this.collection.find({
+            tags: 'Table', free: true
+        }).toArray();
+
+        return result;
+    }
+
+    async getAllTables() {
+        let result = await this.collection.find({
+            tags: 'Table'
+        }).toArray();
+
+        return result;
+    }
+
+    async setTableStatus(table_id, set_free) {
+        let filter = { tags: 'Table', tableid: table_id };
+
+        let result = await this.collection.updateOne(filter, 
+            { $set: {free: set_free} }
+        );
+
+        return result.acknowledged && result.modifiedCount == 1;
     }
 }
 

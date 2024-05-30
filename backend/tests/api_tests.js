@@ -9,6 +9,7 @@ let token = "";
 let dish0 = null;
 let dish1 = null;
 let orderid = null;
+let table1 = null;
 
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
@@ -348,6 +349,97 @@ describe('DELETE /orders/<id>/dish/<dishid>', async() => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send({"quantity": 10})
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+})
+
+describe('GET /tables/free', async() => {
+    it('Responds with 401, missing token', async() => {
+        const resp = await request(server)
+        .get(`/tables/free`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it('Responds with 200, free tables', async() => {
+        const resp = await request(server)
+        .get(`/tables/free`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+        expect(resp.body).toHaveProperty('list');
+
+        console.log(`Tables: ${JSON.stringify(resp.body.list)}`);
+    })
+})
+
+describe('GET /tables/all_tables', async() => {
+    it('Responds with 401, missing token', async() => {
+        const resp = await request(server)
+        .get(`/tables/all_tables`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it('Responds with 200, all tables', async() => {
+        const resp = await request(server)
+        .get(`/tables/all_tables`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(200);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+        expect(resp.body).toHaveProperty('list');
+
+        console.log(`Tables: ${JSON.stringify(resp.body.list)}`);
+
+        table1 = resp.body.list[1];
+    })
+})
+
+describe('POST /tables/<table_id>/status', async() => {
+    it('Responds with 401, missing token', async() => {
+        const resp = await request(server)
+        .post(`/tables/1/status`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(401);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it('Responds with 400, malformed request', async() => {
+        const resp = await request(server)
+        .post(`/tables/1/status`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json');
+
+        expect(resp.status).toEqual(400);
+        expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
+    })
+
+    it('Responds with 200, state changed', async() => {
+        let new_status = table1.free == true ? 'N' : 'Y';
+
+        const resp = await request(server)
+        .post(`/tables/1/status`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send({"free": new_status});
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');

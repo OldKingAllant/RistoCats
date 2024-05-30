@@ -10,7 +10,7 @@ let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
 const oauth_client = new google.Auth.OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    redirectUri: process.env.SERVER_URL + ':' + process.env.PORT + '/users/loginfake'
+    redirectUri: process.env.SERVER_URL + ':' + process.env.PORT + '/static/pages/login_redirect.html'
 })
 
 process.oauth_client = oauth_client;
@@ -46,6 +46,7 @@ let users = require('./backend/routers/users');
 let menu = require('./backend/routers/menu')
 let orders = require('./backend/routers/orders')
 let user_pages = require('./backend/frontend_router')
+let tables = require('./backend/routers/table')
 
 server.get('/alive', (req, resp) => {
     resp.status(200)
@@ -92,6 +93,7 @@ server.use('/users', users)
 server.use('/menu', menu)
 server.use('/orders', orders)
 server.use(user_pages)
+server.use('/tables', tables)
 
 server.use((err, req, resp, next) => {
     console.log(`Internal error: ${err.message}`);

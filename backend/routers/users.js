@@ -63,7 +63,7 @@ router.post('/login', (req, resp, next) => {
         }
 
         const test_mail = "mario.rossi@studenti.unitn.it";
-        const jwt = jsonwebtoken.sign({"mail": test_mail}, process.env.JWT_SECRET, 
+        const jwt = jsonwebtoken.sign({"mail": test_mail, "google_token": req.body.token}, process.env.JWT_SECRET, 
             { expiresIn: process.env.TOKEN_TTL });
 
         resp.status(200)
