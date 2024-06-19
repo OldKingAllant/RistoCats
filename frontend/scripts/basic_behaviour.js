@@ -42,3 +42,117 @@ removerButton.addEventListener('click', function() {
         counterButton.textContent = counter;
     }
 });
+
+window.addEventListener('load', (ev) => {
+    let lang_img = document.getElementById('lang_img');
+    let curr_lang = window.localStorage.getItem('lang');
+
+    console.log(`Selected lang: ${curr_lang}`);
+
+    if(curr_lang == null) {
+        lang_img.src = '/static/assets/images/en_flag.png';
+    } else {
+        let img_name = `/static/assets/images/${curr_lang}_flag.png`;
+        lang_img.src = img_name;
+    }
+
+    window.selected_lang = curr_lang;
+})
+
+function change_lang() {
+    let langs = ['en', 'it'];
+    let readable_name = ['English', 'Italian'];
+    let selected_index = langs.indexOf(window.localStorage.getItem('lang'));
+
+    if(selected_index == -1)
+        selected_index = 0;
+
+    if(document.getElementById('lang_select') == null) {
+        let list_popup = document.createElement('div');
+
+        list_popup.id = 'lang_select';
+        list_popup.className = 'lang_select_list';
+
+        let selected_text = document.createElement('div');
+        selected_text.id = 'lang_select_text';
+        selected_text.style.color = '#c50d0d';
+        selected_text.style.fontSize = '40px';
+        selected_text.innerText = `Currently selected: ${readable_name[selected_index]}`;
+        list_popup.appendChild(selected_text);
+
+        langs.forEach((lang, index) => {
+            let lang_div = document.createElement('div');
+            let lang_button = document.createElement('button');
+            lang_button.id = `${lang}_btn`;
+            lang_button.style.padding = '40px';
+            lang_button.style.borderColor = '#f1dfbb';
+            lang_button.style.borderRadius = '25px';
+            lang_button.style.width = '100%';
+
+            if(selected_index == index) {
+                lang_button.style.backgroundColor = '#cbcf91';
+            } else {
+                lang_button.style.backgroundColor = '#f1dfbb';
+            }
+
+            lang_button.style.color = '#c50d0d';
+            lang_button.style.fontSize = '30px';
+            lang_button.innerText = readable_name[index];
+            lang_button.style.alignItems = 'center';
+
+            let img = document.createElement('img');
+            img.src = `/static/assets/images/${lang}_flag.png`;
+            lang_button.appendChild(img);
+            img.style.position = 'relative';
+            img.style.width = '60px';
+            img.style.height = '60px';
+            img.style.alignSelf = 'center';
+
+            lang_div.appendChild(lang_button);
+            list_popup.appendChild(lang_div);
+
+            lang_button.onclick = (ev) => {
+                let current_select = window.selected_lang == undefined ? window.localStorage.getItem('lang') : window.selected_lang;
+                let other_button = document.getElementById(`${current_select}_btn`);
+                other_button.style.backgroundColor = '#f1dfbb';
+                lang_button.style.backgroundColor = '#cbcf91';
+                window.selected_lang = lang;
+                let text = document.getElementById('lang_select_text');
+                text.innerText = `Currently selected: ${readable_name[index]}`;
+            };
+        });
+
+        let close_btn = document.createElement('button');
+        close_btn.className = 'lang_list_closer';
+        close_btn.innerText = 'Save';
+        close_btn.style.alignSelf = 'right';
+        close_btn.style.marginRight = '20px';
+        close_btn.style.float = 'right';
+
+        close_btn.onclick = () => {
+            list_popup.style.display = 'none';
+            if(window.selected_lang != window.localStorage.getItem('lang')) {
+                window.localStorage.setItem('lang', window.selected_lang);
+                window.location.reload();
+            }
+        };
+
+        let close_no_save = document.createElement('button');
+        close_no_save.className = 'lang_list_closer';
+        close_no_save.innerText = 'Close';
+        close_no_save.style.alignSelf = 'right';
+        close_no_save.style.marginRight = '20px';
+        close_no_save.style.float = 'right';
+
+        close_no_save.onclick = () => {
+            list_popup.style.display = 'none';
+        }
+
+        list_popup.appendChild(close_btn);
+        list_popup.appendChild(close_no_save);
+        document.body.appendChild(list_popup);
+    }
+    
+    let list_popup = document.getElementById('lang_select');
+    list_popup.style.display = 'block';
+}
