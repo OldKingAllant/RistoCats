@@ -8,15 +8,14 @@ class DatabaseDriver {
         this.is_connected = false;
     }
 
-    extractDishInfo(dish) {
+    extractDishInfo(dish, lang) {
         return {
             "id": dish._id,
             "name": dish.nome,
-            "image": "",
-            "ingredients": dish.desc,
-            "price": 0,
-            "calories": 0,
-            "allergens": "",
+            "image": dish.image,
+            "ingredients": dish.desc[lang],
+            "price": dish.price,
+            "allergens": dish.tn[lang],
             "enabled": dish.tags.includes('Si'),
             "statistics": dish.qthistory
         };
@@ -37,21 +36,21 @@ class DatabaseDriver {
         return result;
     }
 
-    async getMenu() {
+    async getMenu(lang) {
         let menu = await this.collection.find({ tags: ["Piatto", "Si"] }).toArray();
         return menu.map((entry) => {
-            return this.extractDishInfo(entry);
+            return this.extractDishInfo(entry, lang);
         })
     }
 
-    async getDish(id) {
+    async getDish(id, lang) {
         let dish = await this.collection.findOne({ _id: new mongodb.ObjectId( id ) });
 
         if(dish == null) {
             return null;
         }
 
-        return this.extractDishInfo(dish);
+        return this.extractDishInfo(dish, lang);
     }
 
     async placeOrder(order) {
@@ -80,10 +79,10 @@ class DatabaseDriver {
         return result.acknowledged && result.modifiedCount == 1;
     }
 
-    async getAllDishes() {
+    async getAllDishes(lang) {
         let result = await this.collection.find({ tags: 'Piatto' }).toArray();
 
-        return result.map((dish) => this.extractDishInfo(dish));
+        return result.map((dish) => this.extractDishInfo(dish, lang));
     }
 
     async getOrders() {

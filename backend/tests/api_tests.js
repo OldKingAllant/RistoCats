@@ -158,7 +158,6 @@ describe('GET /menu/<dish>/properties', async() => {
 
         expect(resp.body).toHaveProperty('name');
         expect(resp.body.name).toEqual(dish0.name);
-        expect(resp.body).toHaveProperty('calories');
         expect(resp.body).toHaveProperty('allergens');
     })
 })
@@ -225,7 +224,7 @@ describe('GET /menu/all_dishes', async() => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
-        .query({"lang": "it"});
+        .query({"lang": "en"});
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');

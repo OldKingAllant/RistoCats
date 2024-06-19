@@ -17,7 +17,7 @@ menu.get('/overview', async(req, resp, next) => {
             return;
         }
         
-        let menu = await process.db_driver.getMenu();
+        let menu = await process.db_driver.getMenu(req.query.lang);
 
         resp.status(200)
             .contentType('application/json')
@@ -50,7 +50,7 @@ menu.get('/:id/properties', async(req, resp, next) => {
             return;
         }
 
-        let dish = await process.db_driver.getDish(req.params.id);
+        let dish = await process.db_driver.getDish(req.params.id, req.query.lang);
 
         resp.status(200)
         .contentType('application/json')
@@ -78,7 +78,7 @@ menu.get('/all_dishes', async(req, resp, next) => {
             return;
         }
 
-        let all_dishes = await process.db_driver.getAllDishes();
+        let all_dishes = await process.db_driver.getAllDishes(req.query.lang);
 
         resp.status(200)
         .contentType('application/json')

@@ -37,7 +37,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
-        let menu = await process.db_driver.getMenu();
+        let menu = await process.db_driver.getMenu(req.query.lang);
 
         let all_respect_format = req.body.dishes.every((elem) => verify_dish(elem, menu));
 
