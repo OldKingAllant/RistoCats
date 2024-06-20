@@ -1,6 +1,8 @@
 /*Header da inserire nella richiesta, contiene il token*/
 const myHeaders = {
-  'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
+  'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
+  'Content-Type': "application/json"
+  
 };
 
 /*Si occupa di far scorrere la pagina*/
@@ -27,11 +29,10 @@ async function set_table_status(option, b){
 	
 	const res = await fetch(sito, {
 		method: "POST",
-		headers: myHeaders,
+		headers: myHeaders, 
 		body: JSON.stringify({
 			free: b,
 		}),
-		headers: { "Content-Type": "application/json" }
 	}).then()
 	if (statusCode != 200){
 			alert("AN ERROR HAS OCURRED!");
