@@ -439,8 +439,8 @@
     </style>
 </head> 
 <body> 
-    <script src="../scripts/basic_behaviour.js"></script> 
-    <script src="../scripts/common.js"></script>
+    <script defer src="../scripts/basic_behaviour.js"></script> 
+    <script defer src="../scripts/common.js"></script>
    
     <div class="white_band">
 
@@ -454,9 +454,8 @@
           </div>
 
           <div id="nutritionaltable" class="modal">
-            <div class="modal-contenuto">
-              <span class="closing">&times;</span>
-            </div>
+            <span class="closing">&times;</span>
+            <div class="modal-contenuto" id="table_content"></div>
           </div>
 
 
@@ -464,64 +463,19 @@
             <button class="switch_button" onclick="change_lang()">
                 <img id="lang_img" src="../assets/images/en_flag.png" alt="Flag">
             </button>
-        
-         
-        <div class="template" id="templateid">
-            <div class="title">Pasta e Fasoi</div>
-            <div class="left-image">
-                <img src="../assets/images/pasta_e_fasoi.jpg" alt="dish1" class="left-image">
-            </div>
-            <div class="text">2 uova
-                100 g di farina 00
-                100 g di semola rimacinata
-                650 g di borlotti freschi o secchi già ammollati
-                200 g di sedano-carote-cipolle
-                un cucchiaio di concentrato di pomodoro
-                olio extravergine d'oliva
-                sale
-                pepe
-                1 foglia d’alloro
-                1 rametto di rosmarino
-                1 spicchio d’aglio
-                1 fetta spessa di lardo
-            </div>
-            <button class="nutritional_info" onclick="generatepopup('nutritionaltable', 'closing')">Nutritional Info</button>
-            <button class="remover" id="remover1">Remove</button>
-            <button class="counter" id="counter1"></button>
-            <button class="adder" id="adder1" >Add</button>
-        </div>
+        <div id="appetizers_container"></div>
 
         <div class="type_ofdish" id="maindish">Main Course</div>
-
-        <div class="template" id="templateid">
-            <div class="title">Risi e Bisi</div>
-                <div class="left-image">
-                    <img src="../assets/images/risi-e-bisi.jpg" alt="dish2" class="left-image">
-                </div>
-                <div class="text">Burro 60 g
-                    Cipolle 1
-                    Pepe nero q.b.
-                    Riso vialone nano 350 
-                    Brodo vegetale 1300 ml
-                    Sale fino q.b.
-                    Pisellini 1 kg
-                    Olio extravergine d'oliva q.b.
-                    Pancetta (tesa) 50 g
-                    Grana Padano DOP da grattugiare 40 g
-                    Prezzemolo 30 g
-                </div>
-            <button class="nutritional_info" onclick="funzioneDiAlberto">Nutritional Info</button>
-            <button class="remover" id="remover2" >Remove</button>
-            <button class="counter" id="counter2" ></button>
-            <button class="adder" id="adder2" >Add</button>
-        </div>
+        <div id="maindish_container"></div>
 
         <div class="type_ofdish" id="secondcourse">Second Course</div>
+        <div id="secondcourse_container"></div>
         <br>
         <br>
         <br>
 
         <div class="type_ofdish" id="dessert">Dessert</div>
+        <div id="dessert_container"></div>
         <br>
         <br>
         <br>

@@ -23,27 +23,59 @@ function generatepopup(id, closer) {
     }
 }
 
+function set_nutritional_info(index) {
+    let table = document.getElementById('table_content');
+    let dish = window.dishes[index];
+    table.innerHTML = `
+    <div>${dish.allergens}</div>
+    `;
+    generatepopup('nutritionaltable', 'closing');
+}
 
+function create_menu_entries(menu) {
+    let app_container = document.getElementById('appetizers_container');
+    let main_container = document.getElementById('maindish_container');
+    let second_container = document.getElementById('secondcourse_container');
+    let dess_container = document.getElementById('dessert_container');
 
+    window.dishes = menu;
+
+    menu.forEach((dish, index) => {
+        let dish_container = document.createElement('div');
+        dish_container.className = 'template';
+        dish_container.innerHTML = 
+        `
+        <div class="title">${dish.name}</div>
+        <div class="left-image">
+            <img src="../assets/images/${dish.image}" alt="dish2" class="left-image">
+        </div>
+        <div class="text">
+            ${dish.ingredients}
+        </div>
+        <button class="nutritional_info" onclick="set_nutritional_info(${index})">Nutritional Info</button>
+        <button class="remover" id="remover_${index}">Remove</button>
+        <button class="counter" id="counter_${index}"></button>
+        <button class="adder" id="adder_${index}">Add</button>
+        `;
+
+        if(dish.type == 'A') {
+            app_container.appendChild(dish_container);
+        } else if(dish.type == 'M') {
+            main_container.appendChild(dish_container);
+        } else if(dish.type == 'S') {
+            second_container.appendChild(dish_container);
+        } else {
+            dess_container.appendChild(dish_container);
+        }
+    });
+}
 
 var counter = 0;
 var counterButton = document.getElementById('counter1');
 var adderButton = document.getElementById('adder1');
 var removerButton = document.getElementById('remover1');
 
-adderButton.addEventListener('click', function() {
-    counter++;
-    counterButton.textContent = counter;
-});
-
-removerButton.addEventListener('click', function() {
-    if (counter > 0) {
-        counter--;
-        counterButton.textContent = counter;
-    }
-});
-
-window.addEventListener('load', (ev) => {
+window.onload = (ev) => {
     let lang_img = document.getElementById('lang_img');
     let curr_lang = window.localStorage.getItem('lang');
 
@@ -57,7 +89,39 @@ window.addEventListener('load', (ev) => {
     }
 
     window.selected_lang = curr_lang;
-})
+
+    fetch(`/menu/overview?lang=${curr_lang}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
+        }
+    })
+    .then((resp) => {
+        if(resp.status != 200) {
+            if(resp.status == 401) {
+                window.location.href = '/static/pages/login.html';
+            } else {
+                alert('Server responded with ' + resp.status);
+                resp.json()
+                .then((body) => console.log(JSON.stringify(body)));
+            }
+        } else {
+            resp.json()
+            .then((body) => {
+                console.log(JSON.stringify(body));
+                create_menu_entries(body.dishes);
+            })
+            .catch((err) => {
+                console.log(JSON.stringify(err));
+                alert('An error occurred');
+            })
+        }
+    })
+    .catch((err) => {
+        console.log(JSON.stringify(err));
+        alert('An error occurred');
+    })
+};
 
 function change_lang() {
     let langs = ['en', 'it'];
