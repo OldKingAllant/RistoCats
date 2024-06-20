@@ -213,7 +213,7 @@
 
         
         
-        .remover, .adder, .counter, .nutritional_info {
+        .remover, .adder, .counter, .nutritional_info, .lang_list_closer {
             font-size: 40px;
             font-family: 'Times New Roman', Times, serif;            
             background-color: #c50d0d;
@@ -328,7 +328,7 @@
 
         .total .notes{
             background-color: #c50d0d;
-            background-image: url('note_120060.png');
+            background-image: url('../assets/images/note_120060.png');
             background-repeat: no-repeat;
             background-size: cover;
             width: 70px;
@@ -395,16 +395,31 @@
             height: 600px;
             background-color: #c50d0d;
             border: 2px solid #f1dfbb;
-            }
+        }
 
-            .modal-contenuto {
+        .lang_select_list {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            margin-top: 180px;
+            margin-left: 0px;
+            overflow: auto;
+            width: 1000px;
+            height: 600px;
+            background-color: #cfb683d7;
+            border: 2px solid #f1dfbb;
+            align-self: center;
+            border-radius: 25px;
+        }
+
+        .modal-contenuto {
                 background-color: #fefefe;
                 margin: auto;
                 margin-top: 25px;
                 height: 90%;
                 border: 1px solid #888;
                 width: 80%;
-            }
+        }
 
             .closing {
             color: #aaa;
@@ -425,6 +440,7 @@
 </head> 
 <body> 
     <script src="../scripts/basic_behaviour.js"></script> 
+    <script src="../scripts/common.js"></script>
    
     <div class="white_band">
 
@@ -445,8 +461,8 @@
 
 
         <div class="type_ofdish" id="appetizers">Appetizers</div>
-            <button class="switch_button" onclick="funzioneDiAlberto">
-                <img src="../assets/images/ukflag.png" alt="UK Flag">
+            <button class="switch_button" onclick="change_lang()">
+                <img id="lang_img" src="../assets/images/en_flag.png" alt="Flag">
             </button>
         
          
@@ -532,7 +548,7 @@
         <button class="button" onclick="indexto('secondcourse')">Second Course</button>
         <button class="button" onclick="indexto('dessert')">Dessert</button>
         <button class="button_total" onclick="indexto('sunto')">Total</button>
-        <button class="logout_button" onclick="funzioneDiAlberto">Logout</button>
+        <button class="logout_button" onclick="perform_logout()">Logout</button>
         <div class="text_box"> Welcome! </div>
     </div>
 

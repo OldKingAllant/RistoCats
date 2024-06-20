@@ -34,7 +34,35 @@
     </style>
 </head>
 <body>
+    <script>
+        function handle_response(resp) {
+            if(resp.status != 200) {
+                alert('An unexpected error has occurred, try again');
+            } else {
+                resp.json()
+                    .then((body) => {
+                        console.log(JSON.stringify(body));
+                        window.location = body.url;
+                    })
+                    .catch((err) => {
+                        console.log(`Error requesting login URL: ${err}`);
+                        alert('An unexpected error has occurred, try again');
+                    });
+            }
+        }
+
+        function request_login_url() {
+            fetch('/users/loginurl', {
+                method: 'GET'
+            })
+            .then(handle_response)
+            .catch((err) => {
+                console.log(`Error requesting login URL: ${err}`);
+                alert('An unexpected error has occurred, try again');
+            })
+        }
+    </script>
     <img src="../assets/images/ristotrositras.png" alt="Logo">
-    <button type="submit"   >Login</button>
+    <button type="submit" onclick="request_login_url()">Login</button>
 </body>
 </html>
