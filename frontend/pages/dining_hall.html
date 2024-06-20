@@ -103,15 +103,16 @@
             padding: 0;
             background-color: #f1dfbb;
         }
-		button {
-            padding: 35px 120px;
-            font-size: 50px;
-            font-family: 'Times New Roman', Times, serif;            
+		.button {
+            color: #f1dfbb;
+            font-family: "Times New Roman", Times, serif;
+            margin-bottom: 10px;
             background-color: #c50d0d;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 20px;
+            height: 120px; 
+            width: 450px; 
+            font-size: 50px;
+            border-radius: 5px;     
+            border-color: #f1dfbb; 
         }
      .whiteband {
         background-color: #f1dfbb;
@@ -366,23 +367,38 @@
   text-decoration: none;
   display: block;
 }
+
+        .logout_button{
+            right: 100px;
+            color: #f1dfbb;
+            font-size: 35px;
+            background-color: #c50d0d;
+            border-color: #f1dfbb; 
+            font-family: "Times New Roman", Times, serif;
+            border-radius: 5px; 
+            border-width: 2px;
+            border-color: white;
+        }
 	</style>
 	
 	
 </head>
 <body>
     <script src="../scripts/basic_behaviour_dining_hall.js"></script>
+    <script src="../scripts/common.js"></script>
+
 	<div class="redband"> 
         <div class="heading">
             <div class="logo">
                 <img src="../assets/images/ristotrositras.png" alt="logo">
             </div>
             <div class="welcometext">
-                <div class="noselect"><h3>Welcome, Kitchen</h3></div>                
+                <div class="noselect"><h3>Welcome, Dining Hall</h3></div>                
             </div>
         </div>
         <div class="body">
             <div class="body_buttons">
+                <button class="logout_button" onclick="perform_logout()">Logout</button>
                 <button class="button" onclick="indexto('ordering')">
                     <div class="noselect" id="order">Manage Tables</div>
                 </button>
@@ -391,7 +407,9 @@
                 </button>
             </div>
         </div>
+        <br>
     </div>
+    
     
     <div class="whiteband">
         <div class="heading">
