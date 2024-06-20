@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+	<title>Table visualization</title>
+	<style>
+		.noselect {
+        user-select: none; 
+        -webkit-user-select: none;
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+    }
+
+    .redband {
+        background-color: #c50d0d;
+        width: 25%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 0 20px 10px;
+    }
+
+    .redband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+        align-items: center;
+    }
+
+    .redband .heading .logo {
+        width: 35%;
+        border-radius: 50%;
+        background-color: #f1dfbb;
+        border: 1px solid black;
+    }
+
+    .redband .heading .logo img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .redband .heading .welcometext {
+        width: 40%;
+        color: #f1dfbb;
+        font-size: 38px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    .redband .body {
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 60%;
+    }
+
+    .redband .body .body_buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-around;
+        align-items: center;
+        height: 100%;
+    }
+
+    .redband .body .body_buttons .button {
+        border: 2px solid #f1dfbb;
+        box-sizing: border-box;
+        width: 90%;
+        height: 20%;
+        background-color: #c50d0d;  
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 65px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+    }
+
+    .whiteband {
+        background-color: #f1dfbb;
+        width: 71%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 20px 20px 10px;
+        overflow: auto;
+    }
+		body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f1dfbb;
+        }
+		button {
+            padding: 35px 120px;
+            font-size: 50px;
+            font-family: 'Times New Roman', Times, serif;            
+            background-color: #c50d0d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+     .whiteband {
+        background-color: #f1dfbb;
+        width: 71%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 20px 20px 10px;
+        overflow: auto;
+    }
+
+    .whiteband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px 15px 15px 15px;
+        align-items: center;
+        color: #c50d0d;
+        font-size: 120px;
+        height: 10%;
+        margin-top: 30px;
+    }
+
+    .whiteband .body{
+        display: flex;
+        position: relative;
+        border:1px solid black;
+        margin-top: 25px;
+        margin-bottom: 60px;
+        height: 700px;
+        padding: 20px;
+        flex-shrink: 0;
+        overflow: auto;
+        flex-direction: column;
+    }
+
+    .whiteband .body::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband .body::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband .body .entry {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        height: 20%;
+        border: 1px solid black;
+        width: 99%;
+        flex-shrink: 0;
+    }
+
+
+    .whiteband .body .entry .text {
+        width: 40%;
+        height: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;    
+        font-size: 80px;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+    }
+
+    .whiteband .body .entry .includer {
+        height: 70%;
+        width:10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+    }
+
+    .includer input[type="checkbox"] {
+        display: none;
+    }
+    
+    .includer .customcheckbox {
+        width: 70px;
+        height: 70%;
+        border: 2px solid #c50d0d;
+        background: #f1dfbb;
+    }
+
+    .includer input[type="checkbox"]:checked + .customcheckbox {
+        background: #f1dfbb;
+    }
+
+    .includer .customcheckbox .checkmark {
+        display: none;
+        color: #c50d0d;
+        font-size: 78px;
+    }
+
+    .includer input[type="checkbox"]:checked + .customcheckbox .checkmark {
+        display: block;
+    }
+
+    .whiteband .body .entry .modify {
+        height: 70%;
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        border: 2px solid #c50d0d;
+        background: #c50d0d;
+        font-size: 35px;
+    }
+
+    .whiteband .body .addnew {
+        position:sticky;
+        background-color: #c50d0d;
+        right: 20px;
+        bottom: 20px;
+        align-self: flex-end;
+        height: 130px;
+        width: 130px;
+        font-size: 80px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        font-weight: bold;
+        border-radius: 80px;
+        margin-top: 20px;
+        
+    }
+
+    .popup_background {
+        background-color: #f1dfbb;
+        width: 1000px;
+        height: 800px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .popup_background .name {
+        width: 90%;
+        height: 15%;
+        font-size: 100px;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+        text-align: center;
+    }
+
+    .popup_background .center {
+        width: 95%;
+        height: 60%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .image {
+        width: 45%;
+        height: 90%;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .description {
+        width: 45%;
+        height: 95%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        color: black;
+    }
+
+    .popup_background .center .description .text {
+        width: 90%;
+        height: 80%;
+        font-size: 40px;
+        font-family: "Times New Roman", Times, serif;
+        text-align: center;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .description .cost {
+        width: 90%;
+        height: 15%;
+        font-size: 55px;
+        font-family: "Times New Roman", Times, serif;
+        text-align: center;
+    }
+
+    .popup_background .footer {
+        width: 90%;
+        height: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup_background .footer .save_button {
+        width: 30%;
+        height: 90%;
+        font-size: 50px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        background-color: #c50d0d;
+        border: 2px solid #c50d0d;
+        border-radius: 10px;
+    }
+    .dropdown {
+  		position: absolute;
+ 		display: inline-block;
+ 		left: 40%;
+	}
+	.dropdown-toggle {
+		border: 4px solid #c50d0d;
+        font-family: "Times New Roman", Times, serif;
+		width: 200px;
+  		border-radius: 10px;
+  		padding: 10px 20px;
+		cursor: pointer;
+		background-color: #f1dfbb;
+	}
+	
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+	</style>
+	
+	
+</head>
+<body>
+    <script src="../scripts/basic_behaviour_dining_hall.js"></script>
+	<div class="redband"> 
+        <div class="heading">
+            <div class="logo">
+                <img src="../assets/images/ristotrositras.png" alt="logo">
+            </div>
+            <div class="welcometext">
+                <div class="noselect"><h3>Welcome, Kitchen</h3></div>                
+            </div>
+        </div>
+        <div class="body">
+            <div class="body_buttons">
+                <button class="button" onclick="indexto('ordering')">
+                    <div class="noselect" id="order">Manage Tables</div>
+                </button>
+                <button class="button" onclick="indexto('stats')">
+                    <div class="noselect">Hall Plant</div>
+                </button>
+                <button class="button" onclick="indexto('modifier')">
+                    <div class="noselect">Dishes Statistics</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="whiteband">
+        <div class="heading">
+            <div class="noselect" id="ordering"><h2>Manage Tables</h2></div>
+        </div>
+        <div class="body">
+        	<div id="table_management" class="dropdown">
+        		<label id="Tables"></label><br>
+        		<label for="Table1">Table 1:</label>
+				<select class="dropdown-toggle" id="Table1">
+	  				<option value="Available" onclick="set_table_status(this, false)">Opzione 1</option>
+	 				<option value="Occupied" onclick="set_table_status(this, true)">Opzione 2</option>
+				</select>
+			</div>    
+        </div>
+        
+        <div class="heading">
+            <div class="noselect" id="stats"><h2>Hall Plant</h2></div>            
+        </div>
+        <div class="body">
+            <div class="entry">
+                                    
+            </div>
+        </div>
+        
+        <div class="heading">
+            <div class="noselect" id="modifier"><h2>Dishes Statistics</h2></div>            
+        </div>
+        <div class="body">
+            <div class="entry">
+                <div class="text">
+                    <div class="noselect" id="entry_text">Lorem ipsum </div>
+                </div>
+                <div class="includer">
+                    <input type="checkbox" id="myCheckbox1">
+                    <label for="myCheckbox1" class="customcheckbox">
+                        <div class="noselect"><span class="checkmark">&#10003;</span></div>
+                        
+                    </label>
+                </div>
+                
+                <button class="modify">Modify</button>
+            </div>
+
+            <button class="addnew" id="adder_button">+</div>
+        </div>
+
+
+        <dialog id="modify_entry">
+            <div  class="popup_background">
+                <div class="name"> Lorem ipsum</div>
+                <div class="center">
+                    <div class="image">Img here</div>
+                    <div class="description">
+                        <div class="text">Lorem ipsum</div>
+                        <div class="cost">$ 14.99</div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <button id="closing" class="save_button" >Save</button>
+                </div>
+            </div>
+        </dialog>
+    </div>
+    <script>get_all_tables();</script>
+    
+
+
+
+</body>
+</html>
