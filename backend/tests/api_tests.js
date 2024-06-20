@@ -29,7 +29,7 @@ describe('POST /users/login', async() => {
             .post('/users/login')
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .send({"token" : "token"})
+            .send({"token" : "token", "test": true})
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['content-type']).toContain('application/json');

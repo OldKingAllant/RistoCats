@@ -1,11 +1,11 @@
 const express = require('express')
 const jsonwebtoken = require('jsonwebtoken')
-const verify_token = require('../login/verify')
+const verify = require('../login/verify')
 const google = require('googleapis')
 
 let router = express.Router();
 
-router.get('/verify', (req, resp, next) => {
+router.get('/verify', async(req, resp, next) => {
     try {
         if(req.query == undefined || req.query == null) {
             resp.status(400)
@@ -21,7 +21,7 @@ router.get('/verify', (req, resp, next) => {
             return;
         }
 
-        if(!verify_token(req.query.jwt, process.env.JWT_SECRET)) {
+        if(!(await verify.verify_token(req.query.jwt, process.env.JWT_SECRET))) {
             resp.status(401)
                 .contentType('application/json')
                 .json({"valid": false, "reason": "invalid token"});
@@ -62,12 +62,38 @@ router.post('/login', async(req, resp, next) => {
             return;
         }
 
-        const test_mail = "mario.rossi@studenti.unitn.it";
-        let user = await process.db_driver.getUserByMail(test_mail);
-        const jwt = jsonwebtoken.sign({"mail": test_mail, "google_token": req.body.token, 
-            "role": user.role
-        }, process.env.JWT_SECRET, 
-            { expiresIn: process.env.TOKEN_TTL });
+        let mail = "";
+        let id_token = null;
+
+        if(req.body.test != undefined) {
+            mail = "mario.rossi@studenti.unitn.it";
+        } else {
+            try {
+                let {tokens} = await process.oauth_client.getToken(req.body.token);
+                let content = await verify.extract_token_payload(tokens.id_token);
+                mail = content.mail;
+                id_token = tokens.id_token;
+            } catch(err) {
+                console.log(`Oauth error: ${err}`);
+                resp.status(401)
+                .contentType('application/json')
+                .json({"valid": false, "reason": "invalid token"});
+                return;
+            }
+        }
+
+        let user = await process.db_driver.getUserByMail(mail);
+
+        if(user == null) {
+            resp.status(401)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "invalid email"});
+            return;
+        }
+
+        const jwt = jsonwebtoken.sign({"mail": mail, "google_token": id_token, 
+            "role": user.role, "test": req.body.test != undefined
+        }, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_TTL });
 
         resp.status(200)
             .header('Content-Type', 'application/json')

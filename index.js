@@ -19,7 +19,7 @@ const server = express()
 const server_port = process.env.PORT;
 const server_path = __dirname;
 
-let verify_token = require('./backend/login/verify')
+let verify = require('./backend/login/verify')
 
 server.use(cors())
 server.use('/static', express.static(__dirname + '/frontend'))
@@ -54,7 +54,7 @@ server.get('/alive', (req, resp) => {
         .json({"status": "running"});
 })
 
-server.use((req, resp, next) => {
+server.use(async(req, resp, next) => {
     const route = req.path;
     if(route == '/users/login' || route == '/users/verify' || route == '/alive' ||
         route == '/users/loginurl'
@@ -78,7 +78,7 @@ server.use((req, resp, next) => {
         return;
     }
 
-    let token_or_err = verify_token(authorization[1], process.env.JWT_SECRET);
+    let token_or_err = await verify.verify_token(authorization[1], process.env.JWT_SECRET);
 
     if(token_or_err == false) {
         resp.status(401)
