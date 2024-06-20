@@ -48,7 +48,7 @@ async function verify_token(token, the_secret) {
         return false;
     }
 
-    if(!decoded.test && !(await verify_google_token(decoded.google_token, payload.mail))) {
+    if(!decoded.test && !(await verify_google_token(decoded.google_token, decoded.mail))) {
         return false;
     }
 
