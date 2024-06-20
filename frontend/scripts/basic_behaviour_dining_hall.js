@@ -50,9 +50,9 @@ async function get_all_tables2(){
 	const tab = "Table";
 	for(let i = 0; i < 3; i++){
 		var object = list[i].toString();
-		var identificatore = tab.toString() + list[i].ID.toString();
+		var identificatore = tab.toString() + list[i].tableid.toString();
 		var numero = identificatore + ":";
-		var tavolo = list[i].NUM;
+		var tavolo = list[i].free;
 		
 		var currentDiv = document.getElementById("Tables");
 		
