@@ -1,3 +1,8 @@
+const myHeaders = {
+  'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
+};
+
+/*Si occupa di far scorrere la pagina*/
 function indexto(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -25,6 +30,22 @@ async function set_table_status(option, b){
 }
 
 async function get_all_tables(){
+	const res = await fetch("/tables/all_tables", {
+			method: "GET",
+			headers: myHeaders,
+		}).then()
+		const statusCode = res.status;
+		if (statusCode != 200){
+			alert("AN ERROR HAS OCURRED!");
+		} else {
+			list = res.list;
+		}
+		//const data = res.json();
+		get_all_tables2();
+		
+}
+
+async function get_all_tables2(){
 	
 	const tab = "Table";
 	for(let i = 0; i < 3; i++){
@@ -67,8 +88,6 @@ async function get_all_tables(){
 		
 	}
 }
-
-
 
 
 
