@@ -145,7 +145,19 @@ function change_lang() {
         close_no_save.style.float = 'right';
 
         close_no_save.onclick = () => {
+            let lang = window.localStorage.getItem('lang');
+
+            let current_select = window.selected_lang == undefined ? lang : window.selected_lang;
+            let shadow_select = document.getElementById(`${lang}_btn`);
+            let other_button = document.getElementById(`${current_select}_btn`);
+            other_button.style.backgroundColor = '#f1dfbb';
+            shadow_select.style.backgroundColor = '#cbcf91';
+
             list_popup.style.display = 'none';
+            window.selected_lang = lang;
+            let selected_index = langs.indexOf(lang);
+            let text = document.getElementById('lang_select_text');
+            text.innerText = `Currently selected: ${readable_name[selected_index]}`;
         }
 
         list_popup.appendChild(close_btn);
