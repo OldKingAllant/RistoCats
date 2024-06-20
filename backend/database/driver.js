@@ -17,7 +17,8 @@ class DatabaseDriver {
             "price": dish.price,
             "allergens": dish.tn[lang],
             "enabled": dish.tags.includes('Si'),
-            "statistics": dish.qthistory
+            "statistics": dish.qthistory,
+            "type": dish.type
         };
     }
 
