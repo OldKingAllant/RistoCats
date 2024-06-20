@@ -1,3 +1,4 @@
+/*Header da inserire nella richiesta, contiene il token*/
 const myHeaders = {
   'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
 };
@@ -13,20 +14,32 @@ function indexto(elementId) {
 var element = document.getElementById("example");
 //Creando la list
 let list = [];
-list.push({ ID: 1, NUM: true });
-list.push({ ID: 2, NUM: false });
-list.push({ ID: 3, NUM: true });
 
 /*
 id: ID del tavolo
-b: true se occupato, false se libero
+b: true se libero, false se occupato
 */
 async function set_table_status(option, b){
 	var select = option.parentNode;
 	var selectid = select.id;
 	var id = selectid.charAt(selectid.length - 1);
+	var sito = "/tables/" + id + "/status";
 	
-	/*Codice per mandare al server*/
+	const res = await fetch(sito, {
+		method: "POST",
+		headers: myHeaders,
+		body: JSON.stringify({
+			free: b,
+		}),
+		headers: { "Content-Type": "application/json" }
+	}).then()
+	if (statusCode != 200){
+			alert("AN ERROR HAS OCURRED!");
+		} else {
+			list = res.list;
+	}
+	
+	console.log(await res.json());
 }
 
 async function get_all_tables(){
@@ -62,14 +75,14 @@ async function get_all_tables2(){
 		
 		var option1 = document.createElement('option');
 		option1.text = 'Available';
-		option1.onclick = 'set_table_status(this, false)';
+		option1.onclick = 'set_table_status(this, true)';
 		select.add(option1);
 		
 		var option2 = document.createElement('option');
 		option2.text = 'Occupied';
-		option2.onclick = 'set_table_status(this, true)';
+		option2.onclick = 'set_table_status(this, false)';
 		
-		if (tavolo == true){
+		if (tavolo == false){
 			option2.setAttribute("selected", "selected");
 		} else {
 			option1.setAttribute("selected", "selected");
