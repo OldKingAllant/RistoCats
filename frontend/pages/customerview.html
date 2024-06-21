@@ -432,20 +432,19 @@
         }
 
             .closing {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            margin-right: 10px;
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                margin-right: 10px;
             }
 
             .closing:hover,
             .closing:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
             }
-                    
     </style>
 </head> 
 <body> 
@@ -456,7 +455,7 @@
 
           <div id="popup" class="modalnotes">
             <div class="modalnotes-content">
-                <span class="close">submit</span>
+                <span class="close" id="submit_text">Submit</span>
                 <textarea class="userInput"></textarea>
               
               <p id="modalText"></p>
@@ -504,7 +503,7 @@
         <br>
         
         <div class="total" id="sunto">
-            <div class="recap_title">Total</div>
+            <div class="recap_title" id="total_text">Total</div>
             <div class="records_name">Pasta e Fasoi</div>
             <div class="quantity">1</div>
             <div class="price">10.00$</div>
@@ -515,19 +514,19 @@
             <div class="price">15.00$</div>
             <button class="notes" onclick="generatepopup('popup')"></button>
         </div>
-        <button class="order_button" onclick="funzioneDiAlberto">Order</button>
+        <button class="order_button" onclick="funzioneDiAlberto" id="btn_order">Order</button>
     </div>
     <script src="../scripts/basic_behaviour.js"></script>
     
     <div class="red_band">
         <div class="flag"> <img src="../assets/images/ristotrositras.png" alt="Logo"> </div>
-        <button class="button" onclick="indexto('appetizers')">Appetizers</button>
-        <button class="button" onclick="indexto('maindish')">Main Course</button>
-        <button class="button" onclick="indexto('secondcourse')">Second Course</button>
-        <button class="button" onclick="indexto('dessert')">Dessert</button>
-        <button class="button_total" onclick="indexto('sunto')">Total</button>
+        <button id="indexer_app" class="button" onclick="indexto('appetizers')">Appetizers</button>
+        <button id="indexer_main" class="button" onclick="indexto('maindish')">Main Course</button>
+        <button id="indexer_second" class="button" onclick="indexto('secondcourse')">Second Course</button>
+        <button id="indexer_dess" class="button" onclick="indexto('dessert')">Dessert</button>
+        <button id="indexer_total" class="button_total" onclick="indexto('sunto')">Total</button>
         <button class="logout_button" onclick="perform_logout()">Logout</button>
-        <div class="text_box"> Welcome! </div>
+        <div id="welcome_text" class="text_box"> Welcome! </div>
     </div>
 
 </body>

@@ -38,6 +38,13 @@ function create_menu_entries(menu) {
     let second_container = document.getElementById('secondcourse_container');
     let dess_container = document.getElementById('dessert_container');
 
+    let _info = ['Nutritional info', 'Valori nutrizionali'];
+    let _remove = ['Remove', 'Rimuovi'];
+    let _add = ['Add', 'Aggiungi'];
+
+    let langs = ['en', 'it'];
+    let selected_index = langs.indexOf(window.localStorage.getItem('lang'));
+
     window.dishes = menu;
 
     menu.forEach((dish, index) => {
@@ -47,15 +54,15 @@ function create_menu_entries(menu) {
         `
         <div class="title">${dish.name}</div>
         <div class="left-image">
-            <img src="../assets/images/${dish.image}" alt="dish2" class="left-image">
+            <img src="../assets/images/${dish.image}" alt="some_dish" class="left-image">
         </div>
         <div class="text">
             ${dish.ingredients}
         </div>
-        <button class="nutritional_info" onclick="set_nutritional_info(${index})">Nutritional Info</button>
-        <button class="remover" id="remover_${index}">Remove</button>
+        <button class="nutritional_info" onclick="set_nutritional_info(${index})">${_info[selected_index]}</button>
+        <button class="remover" id="remover_${index}">${_remove[selected_index]}</button>
         <button class="counter" id="counter_${index}"></button>
-        <button class="adder" id="adder_${index}">Add</button>
+        <button class="adder" id="adder_${index}">${_add[selected_index]}</button>
         `;
 
         if(dish.type == 'A') {
@@ -121,12 +128,45 @@ window.onload = (ev) => {
         console.log(JSON.stringify(err));
         alert('An error occurred');
     })
+
+    let submit_btn = document.getElementById('submit_text');
+    let app = document.getElementById('appetizers');
+    let main = document.getElementById('maindish');
+    let second = document.getElementById('secondcourse');
+    let welcome = document.getElementById('welcome_text');
+
+    let id_app = document.getElementById('indexer_app');
+    let id_main = document.getElementById('indexer_main');
+    let id_second = document.getElementById('indexer_second');
+    let id_total = document.getElementById('indexer_total');
+
+    submit_btn.innerText = curr_lang == 'en' ? 'Submit' : 'Conferma';
+    app.innerText = curr_lang == 'en' ? 'Appetizers' : 'Antipasti';
+    main.innerText = curr_lang == 'en' ? 'Main Course' : 'Primi';
+    second.innerText = curr_lang == 'en' ? 'Second Course' : 'Secondi';
+
+    let total = document.getElementById('total_text');
+    total.innerText = curr_lang == 'en' ? 'Total' : 'Totale';
+
+    let order = document.getElementById('btn_order');
+    order.innerText = curr_lang == 'en' ? 'Order' : 'Ordina';
+
+    welcome.innerText = curr_lang == 'en' ? 'Welcome!' : 'Benvenuto!';
+
+    id_app.innerText = curr_lang == 'en' ? 'Appetizers' : 'Antipasti';
+    id_main.innerText = curr_lang == 'en' ? 'Main Course' : 'Primi';
+    id_second.innerText = curr_lang == 'en' ? 'Second Course' : 'Secondi';
+    id_total.innerText = curr_lang == 'en' ? 'Total' : 'Totale';
 };
 
 function change_lang() {
     let langs = ['en', 'it'];
-    let readable_name = ['English', 'Italian'];
+    let readable_name = ['English', 'Italiano'];
     let selected_index = langs.indexOf(window.localStorage.getItem('lang'));
+
+    let _selected = ['Currently selected', 'Selezionato'];
+    let _save = ['Save', 'Salva'];
+    let _close = ['Close', 'Annulla'];
 
     if(selected_index == -1)
         selected_index = 0;
@@ -141,7 +181,7 @@ function change_lang() {
         selected_text.id = 'lang_select_text';
         selected_text.style.color = '#c50d0d';
         selected_text.style.fontSize = '40px';
-        selected_text.innerText = `Currently selected: ${readable_name[selected_index]}`;
+        selected_text.innerText = _selected[selected_index]  + `: ${readable_name[selected_index]}`;
         list_popup.appendChild(selected_text);
 
         langs.forEach((lang, index) => {
@@ -182,13 +222,13 @@ function change_lang() {
                 lang_button.style.backgroundColor = '#cbcf91';
                 window.selected_lang = lang;
                 let text = document.getElementById('lang_select_text');
-                text.innerText = `Currently selected: ${readable_name[index]}`;
+                text.innerText = _selected[index]  + `: ${readable_name[index]}`;
             };
         });
 
         let close_btn = document.createElement('button');
         close_btn.className = 'lang_list_closer';
-        close_btn.innerText = 'Save';
+        close_btn.innerText = _save[selected_index];
         close_btn.style.alignSelf = 'right';
         close_btn.style.marginRight = '20px';
         close_btn.style.float = 'right';
@@ -203,7 +243,7 @@ function change_lang() {
 
         let close_no_save = document.createElement('button');
         close_no_save.className = 'lang_list_closer';
-        close_no_save.innerText = 'Close';
+        close_no_save.innerText = _close[selected_index];
         close_no_save.style.alignSelf = 'right';
         close_no_save.style.marginRight = '20px';
         close_no_save.style.float = 'right';
@@ -221,7 +261,7 @@ function change_lang() {
             window.selected_lang = lang;
             let selected_index = langs.indexOf(lang);
             let text = document.getElementById('lang_select_text');
-            text.innerText = `Currently selected: ${readable_name[selected_index]}`;
+            text.innerText = _selected[selected_index]  + `: ${readable_name[selected_index]}`;
         }
 
         list_popup.appendChild(close_btn);
