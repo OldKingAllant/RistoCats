@@ -337,8 +337,9 @@ function add_to_order(index) {
         order_list[index] = 1;
 
         let total_container = document.createElement('div');
-        dish_container.className = 'total_template';
-        dish_container.innerHTML = 
+        total_container.id = `total_entry_${index}`;
+        total_container.className = 'total_template';
+        total_container.innerHTML = 
         `
         <div class="records_name">${window.dishes[index].name}</div>
         <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
@@ -365,6 +366,9 @@ function remove_from_order(index) {
     if (order_list[index] != undefined) {
         order_list[index] -= 1;
         if (order_list[index] == 0) {
+            let total_entry = document.getElementById(`total_entry_${index}`);
+            let sunto_container = document.getElementById('sunto');
+            sunto_container.removeChild(total_entry);
             delete order_list[index];
             counter.innerText = 0;
         }else{
