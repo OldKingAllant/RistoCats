@@ -96,7 +96,17 @@
             font-family: "Times New Roman", Times, serif;
             border-radius: 5px; 
         }
+
         img {
+            top: 20px;
+            left: 40px;
+            width: 150px;
+            height: 150px;
+            background-color: #f1dfbb;
+            border-radius: 80px;
+        }
+
+        .flag {
             position: absolute;
             top: 20px;
             left: 40px;
@@ -461,7 +471,7 @@
 
         <div class="type_ofdish" id="appetizers">Appetizers</div>
             <button class="switch_button" onclick="change_lang()">
-                <img id="lang_img" src="../assets/images/en_flag.png" alt="Flag">
+                <img id="lang_img" src="../assets/images/en_flag.png" alt="Flag" class="flag">
             </button>
         <div id="appetizers_container"></div>
 
@@ -469,7 +479,21 @@
         <div id="maindish_container"></div>
 
         <div class="type_ofdish" id="secondcourse">Second Course</div>
-        <div id="secondcourse_container"></div>
+        <div id="secondcourse_container">
+            <div class="template">
+                <div class="title">Risi e bisi test</div>
+            <div class="left-image">
+                <img src="../assets/images/risi-e-bisi.jpg" alt="dish2" class="left-image">
+            </div>
+            <div class="text">
+               TESTO
+            </div>
+            <button class="nutritional_info" onclick="">Nutritional Info</button>
+            <button class="remover" id="remover_test">Remove</button>
+            <button class="counter" id="counter_test"></button>
+            <button class="adder" id="adder_test">Add</button>
+            </div>
+        </div>
         <br>
         <br>
         <br>
@@ -496,7 +520,7 @@
     <script src="../scripts/basic_behaviour.js"></script>
     
     <div class="red_band">
-        <div> <img src="../assets/images/ristotrositras.png" alt="Logo"> </div>
+        <div class="flag"> <img src="../assets/images/ristotrositras.png" alt="Logo"> </div>
         <button class="button" onclick="indexto('appetizers')">Appetizers</button>
         <button class="button" onclick="indexto('maindish')">Main Course</button>
         <button class="button" onclick="indexto('secondcourse')">Second Course</button>
