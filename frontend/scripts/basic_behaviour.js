@@ -1,4 +1,5 @@
 
+/*Scrolls page until it reaches a given element*/
 function indexto(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -6,6 +7,11 @@ function indexto(elementId) {
     }
 }
 
+/**
+ * Bring popup modal into view
+ * @param {*} id Id of the modal
+ * @param {*} closer Id of object that is used to hide the modal
+ */
 function generatepopup(id, closer) {
     var modal = document.getElementById(id);
     var span = document.getElementsByClassName(closer)[0];
@@ -23,15 +29,28 @@ function generatepopup(id, closer) {
     }
 }
 
+/**
+ * Retrieves nut. properties of the given dish and 
+ * modifies the content of the hidden modal 
+ * @param {*} index Index of the dish inside global menu array
+ */
 function set_nutritional_info(index) {
     let table = document.getElementById('table_content');
     let dish = window.dishes[index];
     table.innerHTML = `
     <div>${dish.allergens}</div>
     `;
+
+    //Bring up the modal
     generatepopup('nutritionaltable', 'closing');
 }
 
+/**
+ * Puts all the dishes retrieved with GET /menu/overview in the
+ * correct positions on the page. It also sets the language
+ * of the buttons depending on config
+ * @param {*} menu Array of dishes retrieved with the API
+ */
 function create_menu_entries(menu) {
     let app_container = document.getElementById('appetizers_container');
     let main_container = document.getElementById('maindish_container');
@@ -45,8 +64,10 @@ function create_menu_entries(menu) {
     let langs = ['en', 'it'];
     let selected_index = langs.indexOf(window.localStorage.getItem('lang'));
 
+    //save array of dishes in global variable
     window.dishes = menu;
 
+    //generate all dish containers
     menu.forEach((dish, index) => {
         let dish_container = document.createElement('div');
         dish_container.className = 'template';
@@ -65,6 +86,8 @@ function create_menu_entries(menu) {
         <button class="adder" id="adder_${index}">${_add[selected_index]}</button>
         `;
 
+
+        //Put dish in correct position
         if(dish.type == 'A') {
             app_container.appendChild(dish_container);
         } else if(dish.type == 'M') {
@@ -77,12 +100,8 @@ function create_menu_entries(menu) {
     });
 }
 
-var counter = 0;
-var counterButton = document.getElementById('counter1');
-var adderButton = document.getElementById('adder1');
-var removerButton = document.getElementById('remover1');
-
 window.onload = (ev) => {
+    //Change lang image depending on config
     let lang_img = document.getElementById('lang_img');
     let curr_lang = window.localStorage.getItem('lang');
 
@@ -95,8 +114,10 @@ window.onload = (ev) => {
         lang_img.src = img_name;
     }
 
+    //Set temporary lang in global variable
     window.selected_lang = curr_lang;
 
+    //Retrieve menu from /menu/overview
     fetch(`/menu/overview?lang=${curr_lang}`, {
         method: 'GET',
         headers: {
@@ -106,8 +127,10 @@ window.onload = (ev) => {
     .then((resp) => {
         if(resp.status != 200) {
             if(resp.status == 401) {
+                //Token invalid/expired
                 window.location.href = '/static/pages/login.html';
             } else {
+                //This branch is unexpected (internal server error/server does not respond)
                 alert('Server responded with ' + resp.status);
                 resp.json()
                 .then((body) => console.log(JSON.stringify(body)));
@@ -119,6 +142,7 @@ window.onload = (ev) => {
                 create_menu_entries(body.dishes);
             })
             .catch((err) => {
+                //Server should always return json responses
                 console.log(JSON.stringify(err));
                 alert('An error occurred');
             })
@@ -128,6 +152,8 @@ window.onload = (ev) => {
         console.log(JSON.stringify(err));
         alert('An error occurred');
     })
+
+    /*Translate various things*/
 
     let submit_btn = document.getElementById('submit_text');
     let app = document.getElementById('appetizers');
@@ -159,6 +185,9 @@ window.onload = (ev) => {
     id_total.innerText = curr_lang == 'en' ? 'Total' : 'Totale';
 };
 
+/**
+ * Generates menu with language select
+ */
 function change_lang() {
     let langs = ['en', 'it'];
     let readable_name = ['English', 'Italiano'];
@@ -171,12 +200,15 @@ function change_lang() {
     if(selected_index == -1)
         selected_index = 0;
 
+    //If first time executing this function, create
+    //language select menu
     if(document.getElementById('lang_select') == null) {
         let list_popup = document.createElement('div');
 
         list_popup.id = 'lang_select';
         list_popup.className = 'lang_select_list';
 
+        //Text that shows currently selected lang
         let selected_text = document.createElement('div');
         selected_text.id = 'lang_select_text';
         selected_text.style.color = '#c50d0d';
@@ -184,7 +216,10 @@ function change_lang() {
         selected_text.innerText = _selected[selected_index]  + `: ${readable_name[selected_index]}`;
         list_popup.appendChild(selected_text);
 
+        //This could be used to generate arbitrary language selection,
+        //but we only have eng and ita
         langs.forEach((lang, index) => {
+            //Create button to select a given language
             let lang_div = document.createElement('div');
             let lang_button = document.createElement('button');
             lang_button.id = `${lang}_btn`;
@@ -193,6 +228,7 @@ function change_lang() {
             lang_button.style.borderRadius = '25px';
             lang_button.style.width = '100%';
 
+            //Set color depending if selected or not
             if(selected_index == index) {
                 lang_button.style.backgroundColor = '#cbcf91';
             } else {
@@ -204,6 +240,7 @@ function change_lang() {
             lang_button.innerText = readable_name[index];
             lang_button.style.alignItems = 'center';
 
+            //Show country flag associated with lang
             let img = document.createElement('img');
             img.src = `/static/assets/images/${lang}_flag.png`;
             lang_button.appendChild(img);
@@ -216,16 +253,22 @@ function change_lang() {
             list_popup.appendChild(lang_div);
 
             lang_button.onclick = (ev) => {
+                //If the button of a certain lang is clicked
+                //Retrieve old selection
                 let current_select = window.selected_lang == undefined ? window.localStorage.getItem('lang') : window.selected_lang;
                 let other_button = document.getElementById(`${current_select}_btn`);
+                //Invert highlight color
                 other_button.style.backgroundColor = '#f1dfbb';
                 lang_button.style.backgroundColor = '#cbcf91';
+                //Set global temp lang
                 window.selected_lang = lang;
+                //Change selection text
                 let text = document.getElementById('lang_select_text');
                 text.innerText = _selected[index]  + `: ${readable_name[index]}`;
             };
         });
 
+        //Button used to confirm changes
         let close_btn = document.createElement('button');
         close_btn.className = 'lang_list_closer';
         close_btn.innerText = _save[selected_index];
@@ -235,12 +278,14 @@ function change_lang() {
 
         close_btn.onclick = () => {
             list_popup.style.display = 'none';
+            //Modify config in persistent storage and reload page
             if(window.selected_lang != window.localStorage.getItem('lang')) {
                 window.localStorage.setItem('lang', window.selected_lang);
                 window.location.reload();
             }
         };
 
+        //Button used to rollback language changes
         let close_no_save = document.createElement('button');
         close_no_save.className = 'lang_list_closer';
         close_no_save.innerText = _close[selected_index];
@@ -251,12 +296,14 @@ function change_lang() {
         close_no_save.onclick = () => {
             let lang = window.localStorage.getItem('lang');
 
+            //Change color/highlight of the buttons
             let current_select = window.selected_lang == undefined ? lang : window.selected_lang;
             let shadow_select = document.getElementById(`${lang}_btn`);
             let other_button = document.getElementById(`${current_select}_btn`);
             other_button.style.backgroundColor = '#f1dfbb';
             shadow_select.style.backgroundColor = '#cbcf91';
 
+            //Reset global variable with temp language and reset selection text
             list_popup.style.display = 'none';
             window.selected_lang = lang;
             let selected_index = langs.indexOf(lang);
@@ -269,6 +316,7 @@ function change_lang() {
         document.body.appendChild(list_popup);
     }
     
+    //Show the language select menu
     let list_popup = document.getElementById('lang_select');
     list_popup.style.display = 'block';
 }
