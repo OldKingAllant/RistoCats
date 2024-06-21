@@ -19,11 +19,25 @@ let dish_notes = {};
 function generatepopup(id, closer) {
     var modal = document.getElementById(id);
     var span = document.getElementsByClassName(closer)[0];
+
+    let notes = "";
+
+    if(dish_notes[dish_index] != undefined) {
+        notes = dish_notes[dish_index];
+    }
+
+    let text_area = document.getElementById('submitted_text');
+    text_area.value = notes;
     
     modal.style.display = 'block';
 
     span.onclick = function() {
         modal.style.display = 'none';
+        if (is_dish){
+            is_dish = false;
+            let notes_text= document.getElementById('submitted_text');
+            dish_notes[dish_index] = notes_text.value;
+        }
     }
 
     window.onclick = function(event) {
@@ -344,7 +358,7 @@ function add_to_order(index) {
         <div class="records_name">${window.dishes[index].name}</div>
         <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
         <div class="price">${window.dishes[index].price}</div>
-        <button class="notes" onclick="dish_index = ${index};generatepopup('popup', 'close')"></button>
+        <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
         `
         let sunto_container = document.getElementById('sunto');
         sunto_container.appendChild(total_container);
@@ -371,6 +385,8 @@ function remove_from_order(index) {
             sunto_container.removeChild(total_entry);
             delete order_list[index];
             counter.innerText = 0;
+            if(dish_notes[index] != undefined)
+                delete dish_notes[index];
         }else{
             counter.innerText = order_list[index];
             let total_quantity = document.getElementById(`quantity_${index}`)
