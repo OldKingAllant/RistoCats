@@ -7,6 +7,10 @@ function indexto(elementId) {
     }
 }
 
+let is_dish = false;
+let dish_index = 0;
+let dish_notes = {};
+
 /**
  * Bring popup modal into view
  * @param {*} id Id of the modal
@@ -15,7 +19,7 @@ function indexto(elementId) {
 function generatepopup(id, closer) {
     var modal = document.getElementById(id);
     var span = document.getElementsByClassName(closer)[0];
-
+    
     modal.style.display = 'block';
 
     span.onclick = function() {
@@ -25,6 +29,11 @@ function generatepopup(id, closer) {
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = 'none';
+            if (is_dish){
+                is_dish = false;
+                let notes_text= document.getElementById('submitted_text');
+                dish_notes[dish_index] = notes_text.value;
+            }
         }
     }
 }
@@ -81,9 +90,9 @@ function create_menu_entries(menu) {
             ${dish.ingredients}
         </div>
         <button class="nutritional_info" onclick="set_nutritional_info(${index})">${_info[selected_index]}</button>
-        <button class="remover" id="remover_${index}">${_remove[selected_index]}</button>
-        <button class="counter" id="counter_${index}"></button>
-        <button class="adder" id="adder_${index}">${_add[selected_index]}</button>
+        <button class="remover" onclick="remove_from_order(${index})" id="remover_${index}">${_remove[selected_index]}</button>
+        <button class="counter" id="counter_${index}">0</button>
+        <button class="adder" onclick="add_to_order(${index})" id="adder_${index}">${_add[selected_index]}</button>
         `;
 
 
@@ -320,3 +329,51 @@ function change_lang() {
     let list_popup = document.getElementById('lang_select');
     list_popup.style.display = 'block';
 }
+
+let order_list = {};
+
+function add_to_order(index) {
+    if (order_list[index] == undefined) {
+        order_list[index] = 1;
+
+        let total_container = document.createElement('div');
+        dish_container.className = 'total_template';
+        dish_container.innerHTML = 
+        `
+        <div class="records_name">${window.dishes[index].name}</div>
+        <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
+        <div class="price">${window.dishes[index].price}</div>
+        <button class="notes" onclick="dish_index = ${index};generatepopup('popup', 'close')"></button>
+        `
+        let sunto_container = document.getElementById('sunto');
+        sunto_container.appendChild(total_container);
+        
+    } else {
+        order_list[index] += 1;
+        let total_quantity = document.getElementById(`quantity_${index}`)
+        total_quantity.innerText = order_list[index];
+    }
+    let counter = document.getElementById(`counter_${index}`);
+    counter.innerText = order_list[index];
+
+
+    
+}
+
+function remove_from_order(index) {
+    let counter = document.getElementById(`counter_${index}`);
+    if (order_list[index] != undefined) {
+        order_list[index] -= 1;
+        if (order_list[index] == 0) {
+            delete order_list[index];
+            counter.innerText = 0;
+        }else{
+            counter.innerText = order_list[index];
+            let total_quantity = document.getElementById(`quantity_${index}`)
+            total_quantity.innerText = order_list[index];
+        }
+        
+    }
+}
+
+
