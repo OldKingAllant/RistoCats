@@ -30,7 +30,7 @@ async function set_table_status(id, isfree){
 		method: "POST",
 		headers: myHeaders, 
 		body: JSON.stringify({
-			free: isfree ? 'Y' : 'N',
+			free: isfree ? 'Y' : "N"
 		}),
 	});
 
@@ -114,9 +114,38 @@ async function get_all_tables2(){
 	}
 }
 
+async function show_statistics() {
+	let all_dishes = await fetch('/menu/all_dishes?lang=en', {
+		headers: myHeaders,
+		method: 'GET'
+	});
 
+	if(all_dishes.status != 200) {
+		if(all_dishes.status == 401) {
+			window.location.href = '/static/pages/login.html';
+		} else {
+			alert("AN ERROR HAS OCURRED!");
+		}
+	}
 
+	let dish_list = await all_dishes.json();
 
+	console.log(JSON.stringify(dish_list));
+
+	let names = document.getElementById('stat_dish_name');
+	let quants = document.getElementById('stat_dish_quant');
+
+	dish_list.list.forEach((dish, index) => {
+		let name = document.createElement('div');
+		let stat = document.createElement('div');
+
+		name.innerText = dish.name;
+		stat.innerText = dish.statistics;
+
+		names.appendChild(name);
+		quants.appendChild(stat);
+	})
+}
 
 
 
