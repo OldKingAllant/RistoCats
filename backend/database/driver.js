@@ -165,6 +165,11 @@ class DatabaseDriver {
 
         return result.acknowledged && result.modifiedCount == 1;
     }
+
+    async updateStats(dishid, quantity) {
+        let filter = { _id: new mongodb.ObjectId(dishid) };
+        await this.collection.updateOne(filter, { $inc: {"qthistory": quantity} });
+    }
 }
 
 module.exports = DatabaseDriver;

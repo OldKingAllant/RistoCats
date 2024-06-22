@@ -55,6 +55,10 @@ orders.post('/:tableid/place', async(req, resp, next) => {
 
         let result = await process.db_driver.placeOrder(order);
 
+        for(dish of req.body.dishes) {
+            await process.db_driver.updateStats(dish.id, dish.quantity);
+        }
+
         if(result == null) {
             resp.status(400)
             .contentType('application/json')
