@@ -127,21 +127,25 @@ function create_menu_entries(menu) {
 
     //Restore order from previous session
     for(const [index, quant] of Object.entries(order_list)) {
-        let total_container = document.createElement('div');
-        total_container.id = `total_entry_${index}`;
-        total_container.className = 'total_entries';
-        total_container.innerHTML = 
-        `
-        <div class="records_name">${window.dishes[index].name}</div>
-        <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
-        <div class="price">${window.dishes[index].price}</div>
-        <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
-        `
-        let sunto_container = document.getElementById('suino');
-        sunto_container.appendChild(total_container);
+        if(quant <= 0) {
+            delete order_list[index];
+        } else {
+            let total_container = document.createElement('div');
+            total_container.id = `total_entry_${index}`;
+            total_container.className = 'total_entries';
+            total_container.innerHTML = 
+            `
+            <div class="records_name">${window.dishes[index].name}</div>
+            <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
+            <div class="price">${window.dishes[index].price}</div>
+            <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
+            `
+            let sunto_container = document.getElementById('suino');
+            sunto_container.appendChild(total_container);
 
-        let counter = document.getElementById(`counter_${index}`);
-        counter.innerText = quant;
+            let counter = document.getElementById(`counter_${index}`);
+            counter.innerText = quant;
+        }
     }
 
     compute_subtotal();
