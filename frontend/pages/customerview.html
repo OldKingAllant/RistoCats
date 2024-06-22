@@ -266,7 +266,7 @@
 
         .total{
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: unset; 
             width: 1200px; 
             height: unset; 
@@ -274,7 +274,6 @@
             margin-top: 280px;
             flex-shrink: 0;
             flex-wrap: wrap;
-            justify-content:left;
         }
 
         .total .recap_title {
@@ -292,59 +291,49 @@
             border-bottom: 2px solid #c50d0d;
         }
 
-        .total .records_name, .notes, .quantity, .price {
-            font-size: 60px;
-            font-family: "Times New Roman", Times, serif;
-            color: #c50d0d;;
-            height: unset;
-            flex-wrap: nowrap;
-            align-self: unset   ;
-            align-items: flex-end;
-            flex-direction: row;
-            
-        }
-
-        .total .records_name{
-            position: static;
+        .total .total_entries {
+            width: 90%;
+            height: 20px;
             font-size: 60px;
             font-family: "Times New Roman", Times, serif;
             color: #c50d0d;
-            width: 650px;
-            height: 70px;
+            height: unset;
             flex-wrap: nowrap;
-            align-self: left   ;
-            align-items: left;
-            margin-left: 20px;
-            margin-right: 25px;
-            margin-bottom: 50px;
-            margin-top: 0px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .total .quantity{
-            height: 70px;
-            width: 70px;
-            margin-left: 25px;
-            margin-right: 25px;
+        .total .total_entries .records_name{
+            font-size: 60px;
+            font-family: "Times New Roman", Times, serif;
+            color: #c50d0d;
+            width: 40%;
+        }
+
+        .total .total_entries .quantity{
+            width: 20%;
+            height: auto;
             justify-content: center;
         }
 
-        .total .price {
-            height: 70px;
-            width: 200px;
-            margin-left: 25px;
-            margin-right: 25px;
+        .total .total_entries .price {
+            width: 20%;
+            height: auto;
             justify-content: center;
         }
 
-        .total .notes{
+        .total .total_entries .notes{
             background-color: #c50d0d;
             background-image: url('../assets/images/note_120060.png');
             background-repeat: no-repeat;
             background-size: cover;
             width: 70px;
             height: 70px;
-            margin-left: 25px;
             border: 1px solid #f1dfbb;
+            justify-content: center;
         }
 
         .modalnotes {
@@ -504,6 +493,12 @@
         
         <div class="total" id="sunto">
             <div class="recap_title" id="total_text">Total</div>
+            <div class="total_entries">
+                <div class="records_name">nome</div>
+                <div class="quantity">quantity</div>
+                <div class="price">price</div>
+                <button class="notes" onclick="dish_index = ${index};generatepopup('popup', 'close')"></button>
+            </div>
         </div>
         <button class="order_button" onclick="funzioneDiAlberto" id="btn_order">Order</button>
     </div>
