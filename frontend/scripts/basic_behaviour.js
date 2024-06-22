@@ -10,6 +10,7 @@ function indexto(elementId) {
 let is_dish = false;
 let dish_index = 0;
 let dish_notes = {};
+let order_list = {};
 
 /**
  * Bring popup modal into view
@@ -19,11 +20,26 @@ let dish_notes = {};
 function generatepopup(id, closer) {
     var modal = document.getElementById(id);
     var span = document.getElementsByClassName(closer)[0];
+
+    let notes = "";
+
+    if(dish_notes[dish_index] != undefined) {
+        notes = dish_notes[dish_index];
+    }
+
+    let text_area = document.getElementById('submitted_text');
+    text_area.value = notes;
     
     modal.style.display = 'block';
 
     span.onclick = function() {
         modal.style.display = 'none';
+        if (is_dish){
+            is_dish = false;
+            let notes_text= document.getElementById('submitted_text');
+            dish_notes[dish_index] = notes_text.value;
+            window.localStorage.setItem('current_notes', JSON.stringify(dish_notes));
+        }
     }
 
     window.onclick = function(event) {
@@ -33,6 +49,7 @@ function generatepopup(id, closer) {
                 is_dish = false;
                 let notes_text= document.getElementById('submitted_text');
                 dish_notes[dish_index] = notes_text.value;
+                window.localStorage.setItem('current_notes', JSON.stringify(dish_notes));
             }
         }
     }
@@ -107,6 +124,25 @@ function create_menu_entries(menu) {
             dess_container.appendChild(dish_container);
         }
     });
+
+    //Restore order from previous session
+    for(const [index, quant] of Object.entries(order_list)) {
+        let total_container = document.createElement('div');
+        total_container.id = `total_entry_${index}`;
+        total_container.className = 'total_template';
+        total_container.innerHTML = 
+        `
+        <div class="records_name">${window.dishes[index].name}</div>
+        <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
+        <div class="price">${window.dishes[index].price}</div>
+        <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
+        `
+        let sunto_container = document.getElementById('sunto');
+        sunto_container.appendChild(total_container);
+
+        let counter = document.getElementById(`counter_${index}`);
+        counter.innerText = quant;
+    }
 }
 
 window.onload = (ev) => {
@@ -175,6 +211,8 @@ window.onload = (ev) => {
     let id_second = document.getElementById('indexer_second');
     let id_total = document.getElementById('indexer_total');
 
+    let clear_btn = document.getElementById('btn_clear');
+
     submit_btn.innerText = curr_lang == 'en' ? 'Submit' : 'Conferma';
     app.innerText = curr_lang == 'en' ? 'Appetizers' : 'Antipasti';
     main.innerText = curr_lang == 'en' ? 'Main Course' : 'Primi';
@@ -192,6 +230,17 @@ window.onload = (ev) => {
     id_main.innerText = curr_lang == 'en' ? 'Main Course' : 'Primi';
     id_second.innerText = curr_lang == 'en' ? 'Second Course' : 'Secondi';
     id_total.innerText = curr_lang == 'en' ? 'Total' : 'Totale';
+
+    clear_btn.innerText = curr_lang == 'en' ? 'Clear' : 'Cancella';
+
+    //Retrieve old order if present
+    let old_notes = window.localStorage.getItem('current_notes');
+
+    dish_notes = old_notes != null ? JSON.parse(old_notes) : {};
+
+    let old_list = window.localStorage.getItem('current_order');
+
+    order_list = old_list != null ? JSON.parse(old_list) : {};
 };
 
 /**
@@ -330,20 +379,19 @@ function change_lang() {
     list_popup.style.display = 'block';
 }
 
-let order_list = {};
-
 function add_to_order(index) {
     if (order_list[index] == undefined) {
         order_list[index] = 1;
 
         let total_container = document.createElement('div');
-        dish_container.className = 'total_template';
-        dish_container.innerHTML = 
+        total_container.id = `total_entry_${index}`;
+        total_container.className = 'total_template';
+        total_container.innerHTML = 
         `
         <div class="records_name">${window.dishes[index].name}</div>
         <div class="quantity" id="quantity_${index}">${order_list[index]}</div>
         <div class="price">${window.dishes[index].price}</div>
-        <button class="notes" onclick="dish_index = ${index};generatepopup('popup', 'close')"></button>
+        <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
         `
         let sunto_container = document.getElementById('sunto');
         sunto_container.appendChild(total_container);
@@ -356,8 +404,8 @@ function add_to_order(index) {
     let counter = document.getElementById(`counter_${index}`);
     counter.innerText = order_list[index];
 
-
-    
+    //Save in persistent storage in case the page is reloaded
+    window.localStorage.setItem('current_order', JSON.stringify(order_list));
 }
 
 function remove_from_order(index) {
@@ -365,15 +413,26 @@ function remove_from_order(index) {
     if (order_list[index] != undefined) {
         order_list[index] -= 1;
         if (order_list[index] == 0) {
+            let total_entry = document.getElementById(`total_entry_${index}`);
+            let sunto_container = document.getElementById('sunto');
+            sunto_container.removeChild(total_entry);
             delete order_list[index];
             counter.innerText = 0;
+            if(dish_notes[index] != undefined)
+                delete dish_notes[index];
         }else{
             counter.innerText = order_list[index];
             let total_quantity = document.getElementById(`quantity_${index}`)
             total_quantity.innerText = order_list[index];
         }
-        
     }
+
+     //Save in persistent storage in case the page is reloaded
+    window.localStorage.setItem('current_order', JSON.stringify(order_list));
 }
 
-
+function clear_order() {
+    window.localStorage.removeItem('current_order');
+    window.localStorage.removeItem('current_notes');
+    window.location.reload();
+}

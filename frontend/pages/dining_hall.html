@@ -80,7 +80,7 @@
         font-family: "Times New Roman", Times, serif;
         color: #f1dfbb;
     }
-
+    
     .whiteband {
         background-color: #f1dfbb;
         width: 71%;
@@ -183,7 +183,58 @@
         width: 99%;
         flex-shrink: 0;
     }
-
+    
+    .greenband{
+    	width: 50%;
+  		height: 100%;
+   		position: absolute;
+   		right: 0;
+    }
+    
+    .rightband{
+    	width: 50%;
+  		height: 100%;
+   		position: absolute;
+   		right: 1;
+    }
+    
+    .dishband{
+    	width: 80%;
+  		height: 100%;
+   		position: absolute;
+   		right: 1;
+    }
+    
+    .dishband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0px 15px 15px 15px;
+        align-items: center;
+        color: #c50d0d;
+        font-size: 50px;
+        height: 0%;
+        margin-top: 20px;
+    }
+    
+    .quantityband{
+    	width: 20%;
+  		height: 100%;
+   		position: absolute;
+   		right: 0;
+    }
+    
+    .quantityband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0px 15px 15px 15px;
+        align-items: center;
+        color: #c50d0d;
+        font-size: 50px;
+        height: 0%;
+        margin-top: 20px;
+    }
 
     .whiteband .body .entry .text {
         width: 40%;
@@ -230,117 +281,6 @@
     .includer input[type="checkbox"]:checked + .customcheckbox .checkmark {
         display: block;
     }
-
-    .whiteband .body .entry .modify {
-        height: 70%;
-        width: 10%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: "Times New Roman", Times, serif;
-        color: #f1dfbb;
-        border: 2px solid #c50d0d;
-        background: #c50d0d;
-        font-size: 35px;
-    }
-
-    .whiteband .body .addnew {
-        position:sticky;
-        background-color: #c50d0d;
-        right: 20px;
-        bottom: 20px;
-        align-self: flex-end;
-        height: 130px;
-        width: 130px;
-        font-size: 80px;
-        font-family: "Times New Roman", Times, serif;
-        color: #f1dfbb;
-        font-weight: bold;
-        border-radius: 80px;
-        margin-top: 20px;
-        
-    }
-
-    .popup_background {
-        background-color: #f1dfbb;
-        width: 1000px;
-        height: 800px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-    }
-
-    .popup_background .name {
-        width: 90%;
-        height: 15%;
-        font-size: 100px;
-        font-family: "Times New Roman", Times, serif;
-        color: #c50d0d;
-        text-align: center;
-    }
-
-    .popup_background .center {
-        width: 95%;
-        height: 60%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        border: 1px solid black;
-    }
-
-    .popup_background .center .image {
-        width: 45%;
-        height: 90%;
-        border: 1px solid black;
-    }
-
-    .popup_background .center .description {
-        width: 45%;
-        height: 95%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-        color: black;
-    }
-
-    .popup_background .center .description .text {
-        width: 90%;
-        height: 80%;
-        font-size: 40px;
-        font-family: "Times New Roman", Times, serif;
-        text-align: center;
-        border: 1px solid black;
-    }
-
-    .popup_background .center .description .cost {
-        width: 90%;
-        height: 15%;
-        font-size: 55px;
-        font-family: "Times New Roman", Times, serif;
-        text-align: center;
-    }
-
-    .popup_background .footer {
-        width: 90%;
-        height: 15%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .popup_background .footer .save_button {
-        width: 30%;
-        height: 90%;
-        font-size: 50px;
-        font-family: "Times New Roman", Times, serif;
-        color: #f1dfbb;
-        background-color: #c50d0d;
-        border: 2px solid #c50d0d;
-        border-radius: 10px;
-    }
     .dropdown {
   		position: absolute;
  		display: inline-block;
@@ -357,28 +297,29 @@
 	}
 	
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
+	.dropdown:hover .dropdown-content {
+  		display: block;
+	}
 
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
+	.dropdown-content a {
+  		color: black;
+  		padding: 12px 16px;
+  		text-decoration: none;
+  		display: block;
+	}
 
-        .logout_button{
-            right: 100px;
-            color: #f1dfbb;
-            font-size: 35px;
-            background-color: #c50d0d;
-            border-color: #f1dfbb; 
-            font-family: "Times New Roman", Times, serif;
-            border-radius: 5px; 
-            border-width: 2px;
-            border-color: white;
-        }
+	.logout_button{
+    	right: 100px;
+        color: #f1dfbb;
+        font-size: 35px;
+        background-color: #c50d0d;
+        border-color: #f1dfbb; 
+        font-family: "Times New Roman", Times, serif;
+        border-radius: 5px; 
+        border-width: 2px;
+        border-color: white;
+    }
+    
 	</style>
 	
 	
@@ -413,7 +354,7 @@
     
     <div class="whiteband">
         <div class="heading">
-            <div class="noselect" id="ordering"><h2>Manage Tables</h2></div>
+            <div class="noselect" id="ordering"><h3>Manage Tables</h3></div>
         </div>
         <div class="body">
         	<div id="table_management" class="dropdown">
@@ -427,8 +368,23 @@
             <div class="noselect" id="modifier"><h2>Dishes Statistics</h2></div>            
         </div>
         <div class="body">
-            
+            <div class="greenband">
+				<span></span>
+       		</div>
+       		<div class="rightband">
+       			<div class="dishband">
+					<div class="heading">
+            			<div class="noselect" id="ordering"><h2>Dish</h2></div>
+        			</div>
+				</div>
+				<div class="quantityband">
+					<div class="heading">
+            			<div class="noselect" id="ordering"><h2>Qt</h2></div>
+        			</div>
+				</div>
+       		</div>
         </div>
+        
 
 
         <dialog id="modify_entry">
