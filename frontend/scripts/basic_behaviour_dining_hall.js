@@ -21,23 +21,25 @@ let list = [];
 id: ID del tavolo
 b: true se libero, false se occupato
 */
-async function set_table_status(option, b){
-	var select = option.parentNode;
-	var selectid = select.id;
-	var id = selectid.charAt(selectid.length - 1);
+async function set_table_status(id, isfree){
 	var sito = "/tables/" + id + "/status";
+
+	console.log(sito);
 	
 	const res = await fetch(sito, {
 		method: "POST",
 		headers: myHeaders, 
 		body: JSON.stringify({
-			free: b,
+			free: isfree ? 'Y' : 'N',
 		}),
-	}).then()
-	if (statusCode != 200){
-			alert("AN ERROR HAS OCURRED!");
+	});
+
+	if (res.status != 200) {
+		if(res.status == 401) {
+			window.location.href = '/static/pages/login.html';
 		} else {
-			list = res.list;
+			alert("AN ERROR HAS OCURRED!");
+		}
 	}
 	
 	console.log(await res.json());
@@ -64,11 +66,17 @@ async function get_all_tables(){
 	get_all_tables2();
 }
 
+function change_status_clicked(id, element) {
+	let value = element.value;
+	console.log(`Change table ${id} status to ${value}`);
+
+	set_table_status(id, value == 'Available' ? true : false);
+}
+
 async function get_all_tables2(){
 	
 	const tab = "Table";
-	for(let i = 0; i < 3; i++){
-		var object = list[i].toString();
+	for(let i = 0; i < list.length; i++){
 		var identificatore = tab.toString() + list[i].tableid.toString();
 		var numero = identificatore + ":";
 		var tavolo = list[i].free;
@@ -78,15 +86,14 @@ async function get_all_tables2(){
 		var select = document.createElement('select');
 		select.id = identificatore;
 		select.classList.add("dropdown-toggle");
+		select.onchange = () => { change_status_clicked(i, select) };
 		
 		var option1 = document.createElement('option');
 		option1.text = 'Available';
-		option1.onclick = 'set_table_status(this, true)';
 		select.add(option1);
 		
 		var option2 = document.createElement('option');
 		option2.text = 'Occupied';
-		option2.onclick = 'set_table_status(this, false)';
 		
 		if (tavolo == false){
 			option2.setAttribute("selected", "selected");
@@ -104,7 +111,6 @@ async function get_all_tables2(){
 		var br = document.createElement("br");
 		currentDiv.parentNode.insertBefore(lab, currentDiv.nextSibling);
 		currentDiv.parentNode.insertBefore(br, currentDiv.nextSibling);
-		
 	}
 }
 
