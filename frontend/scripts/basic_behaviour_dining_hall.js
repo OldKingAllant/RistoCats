@@ -47,16 +47,21 @@ async function get_all_tables(){
 	const res = await fetch("/tables/all_tables", {
 			method: "GET",
 			headers: myHeaders,
-		}).then()
-		const statusCode = res.status;
-		if (statusCode != 200){
-			alert("AN ERROR HAS OCURRED!");
+	});
+
+	const statusCode = res.status;
+	if (statusCode != 200){
+		if(statusCode == 401) {
+			window.location.href = '/static/pages/login.html';
 		} else {
-			list = res.list;
+			alert("AN ERROR HAS OCURRED!");
 		}
-		//const data = res.json();
-		get_all_tables2();
-		
+	} else {
+		list = (await res.json()).list;
+	}
+	
+	console.log(JSON.stringify(list));
+	get_all_tables2();
 }
 
 async function get_all_tables2(){
