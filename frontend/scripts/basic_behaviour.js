@@ -420,9 +420,9 @@ function remove_from_order(index) {
     let counter = document.getElementById(`counter_${index}`);
     if (order_list[index] != undefined && order_list[index] > 0) {
         order_list[index] -= 1;
-        if (order_list[index] <= 0) {
+        if (order_list[index] == 0) {
             let total_entry = document.getElementById(`total_entry_${index}`);
-            let sunto_container = document.getElementById('sunto');
+            let sunto_container = document.getElementById('suino');
             sunto_container.removeChild(total_entry);
             delete order_list[index];
             counter.innerText = 0;
