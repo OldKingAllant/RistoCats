@@ -153,6 +153,13 @@ function create_menu_entries(menu) {
 }
 
 window.onload = (ev) => {
+    let table = window.localStorage.getItem('table_id');
+
+    if(table == null || isNaN(table) || table == "") {
+        window.location.href = '/static/pages/login.html';
+        return;
+    }
+
     //Change lang image depending on config
     let lang_img = document.getElementById('lang_img');
     let curr_lang = window.localStorage.getItem('lang');
@@ -477,13 +484,13 @@ function place_order() {
 
     let id_table = window.localStorage.getItem('table_id');
 
-    fetch(`/order/${id_table}/place`, {
+    fetch(`/orders/${id_table}/place`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
         },
-        body: JSON.stringify(order)
+        body: JSON.stringify({"dishes": order})
     })
     .then((resp) => {
         if(resp.status != 200) {
