@@ -145,7 +145,7 @@ function create_menu_entries(menu) {
     }
 
     compute_subtotal();
-    
+
 }
 
 window.onload = (ev) => {
@@ -418,7 +418,7 @@ function add_to_order(index) {
 
 function remove_from_order(index) {
     let counter = document.getElementById(`counter_${index}`);
-    if (order_list[index] != undefined) {
+    if (order_list[index] != undefined && order_list[index] > 0) {
         order_list[index] -= 1;
         if (order_list[index] <= 0) {
             let total_entry = document.getElementById(`total_entry_${index}`);
@@ -426,13 +426,15 @@ function remove_from_order(index) {
             sunto_container.removeChild(total_entry);
             delete order_list[index];
             counter.innerText = 0;
-            if(dish_notes[index] != undefined)
+            if(dish_notes[index] != undefined){
                 delete dish_notes[index];
-            }else{
+            }
+        }else{
             counter.innerText = order_list[index];
             let total_quantity = document.getElementById(`quantity_${index}`)
             total_quantity.innerText = order_list[index];
         }
+
     }
 
     compute_subtotal();
