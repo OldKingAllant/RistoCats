@@ -310,6 +310,12 @@
             justify-content: space-around;
             margin-left: auto;
             margin-right: auto;
+            flex-shrink: 0;
+        }
+
+        #suino {
+            display: flex;
+            flex-direction: column;
         }
 
         .total .total_entries .records_name{
@@ -340,6 +346,37 @@
             height: 70px;
             border: 1px solid #f1dfbb;
             justify-content: center;
+        }
+
+        .subtotal{
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subtotal .title{
+            margin-top: 100px;
+            text-align: center;
+            font-size: 80px; 
+            color: #c50d0d;   
+            align-items: center;    
+            flex-direction: column;   
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+            width: 50%;
+            border-bottom: 2px solid #c50d0d;
+        }
+
+        .subtotal .total_price{
+            text-align: center;
+            font-size: 80px; 
+            color: #c50d0d;   
+            align-items: center;    
+            flex-direction: column;   
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 250px;
+            width: 50%;
         }
 
         .modalnotes {
@@ -499,8 +536,11 @@
         
         <div class="total" id="sunto">
             <div class="recap_title" id="total_text">Total</div>
+            <div class="total_entries" id="suino"></div>
+        <div class="subtotal">
+            <div class="title" id="subtotal"></div>
+            <div class="total_price" id="total_price"></div>
         </div>
-        <div id="subtotal">Subtotal placeholder</div>
         <div class="bottom_button">
             <button class="order_button" onclick="clear_order()" id="btn_clear">Clear</button>
             <button class="order_button" onclick="funzioneDiAlberto" id="btn_order">Order</button>

@@ -129,7 +129,7 @@ function create_menu_entries(menu) {
     for(const [index, quant] of Object.entries(order_list)) {
         let total_container = document.createElement('div');
         total_container.id = `total_entry_${index}`;
-        total_container.className = 'total_template';
+        total_container.className = 'total_entries';
         total_container.innerHTML = 
         `
         <div class="records_name">${window.dishes[index].name}</div>
@@ -137,12 +137,15 @@ function create_menu_entries(menu) {
         <div class="price">${window.dishes[index].price}</div>
         <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
         `
-        let sunto_container = document.getElementById('sunto');
+        let sunto_container = document.getElementById('suino');
         sunto_container.appendChild(total_container);
 
         let counter = document.getElementById(`counter_${index}`);
         counter.innerText = quant;
     }
+
+    compute_subtotal();
+    
 }
 
 window.onload = (ev) => {
@@ -213,6 +216,8 @@ window.onload = (ev) => {
 
     let clear_btn = document.getElementById('btn_clear');
 
+    let subtotal = document.getElementById('subtotal');
+
     submit_btn.innerText = curr_lang == 'en' ? 'Submit' : 'Conferma';
     app.innerText = curr_lang == 'en' ? 'Appetizers' : 'Antipasti';
     main.innerText = curr_lang == 'en' ? 'Main Course' : 'Primi';
@@ -232,6 +237,7 @@ window.onload = (ev) => {
     id_total.innerText = curr_lang == 'en' ? 'Total' : 'Totale';
 
     clear_btn.innerText = curr_lang == 'en' ? 'Clear' : 'Cancella';
+    subtotal.innerText = curr_lang == 'en' ? 'Subtotal' : 'Subtotale';
 
     //Retrieve old order if present
     let old_notes = window.localStorage.getItem('current_notes');
@@ -385,7 +391,7 @@ function add_to_order(index) {
 
         let total_container = document.createElement('div');
         total_container.id = `total_entry_${index}`;
-        total_container.className = 'total_template';
+        total_container.className = 'total_entries';
         total_container.innerHTML = 
         `
         <div class="records_name">${window.dishes[index].name}</div>
@@ -393,7 +399,7 @@ function add_to_order(index) {
         <div class="price">${window.dishes[index].price}</div>
         <button class="notes" onclick="is_dish = true;dish_index = ${index};generatepopup('popup', 'close')"></button>
         `
-        let sunto_container = document.getElementById('sunto');
+        let sunto_container = document.getElementById('suino');
         sunto_container.appendChild(total_container);
         
     } else {
@@ -404,6 +410,8 @@ function add_to_order(index) {
     let counter = document.getElementById(`counter_${index}`);
     counter.innerText = order_list[index];
 
+    compute_subtotal(); 
+
     //Save in persistent storage in case the page is reloaded
     window.localStorage.setItem('current_order', JSON.stringify(order_list));
 }
@@ -412,7 +420,7 @@ function remove_from_order(index) {
     let counter = document.getElementById(`counter_${index}`);
     if (order_list[index] != undefined) {
         order_list[index] -= 1;
-        if (order_list[index] == 0) {
+        if (order_list[index] <= 0) {
             let total_entry = document.getElementById(`total_entry_${index}`);
             let sunto_container = document.getElementById('sunto');
             sunto_container.removeChild(total_entry);
@@ -420,15 +428,18 @@ function remove_from_order(index) {
             counter.innerText = 0;
             if(dish_notes[index] != undefined)
                 delete dish_notes[index];
-        }else{
+            }else{
             counter.innerText = order_list[index];
             let total_quantity = document.getElementById(`quantity_${index}`)
             total_quantity.innerText = order_list[index];
         }
     }
 
+    compute_subtotal();
+
      //Save in persistent storage in case the page is reloaded
     window.localStorage.setItem('current_order', JSON.stringify(order_list));
+    window.localStorage.setItem('current_notes', JSON.stringify(dish_notes));
 }
 
 function clear_order() {
@@ -442,7 +453,7 @@ function compute_subtotal() {
     for (const [index, quant] of Object.entries(order_list)) {
         total += window.dishes[index].price * quant;
     }
-    let subtotal = document.getElementById('subtotal');
+    let subtotal = document.getElementById('total_price');
     subtotal.innerText = total;
 }
 
@@ -450,10 +461,17 @@ function place_order() {
     let order = [];
     for (const [index, quant] of Object.entries(order_list)) {
         let dish = window.dishes[index];
-        order.push({id: dish.id, quantity: quant, notes: dish_notes[index]});
+        order.push({id: dish.id, quantity: quant, infos: dish_notes[index]==undefined ? "" : dish_notes[index]});
     }
 
-    fetch('/menu/order', {
+    if(order.length == 0) {
+        alert('No dishes selected');
+        return;
+    }
+
+    let id_table = window.localStorage.getItem('table_id');
+
+    fetch(`/order/${id_table}/place`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
