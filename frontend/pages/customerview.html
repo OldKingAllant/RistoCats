@@ -139,8 +139,15 @@
         background: #c50d0d; 
         border-radius: 5px; 
         }
+
+        .bottom_button {
+            display: flex;
+            flex-direction: row; 
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
         
-        .order_button {
+        .bottom_button .order_button {
             flex-direction: column  ;
             font-size: 120px;
             justify-content: flex-end;
@@ -149,14 +156,13 @@
             font-family: "Times New Roman", Times, serif;
             background-color: #c50d0d;
             align-items: center;
-            align-self: center;
             align-content: center;
             height: 200px; 
             width: 450px;
             border-radius: 50px;     
             border-color: #f1dfbb;
             flex-shrink: 0; 
-            margin-bottom: 30px;
+            margin: 0 25px 30px;
         }
         
         .template {
@@ -493,16 +499,12 @@
         
         <div class="total" id="sunto">
             <div class="recap_title" id="total_text">Total</div>
-            <div class="total_entries">
-                <div class="records_name">nome</div>
-                <div class="quantity">quantity</div>
-                <div class="price">price</div>
-                <button class="notes" onclick="dish_index = ${index};generatepopup('popup', 'close')"></button>
-            </div>
         </div>
         <div id="subtotal">Subtotal placeholder</div>
-        <button class="order_button" onclick="clear_order()" id="btn_clear">Clear</button>
-        <button class="order_button" onclick="funzioneDiAlberto" id="btn_order">Order</button>
+        <div class="bottom_button">
+            <button class="order_button" onclick="clear_order()" id="btn_clear">Clear</button>
+            <button class="order_button" onclick="funzioneDiAlberto" id="btn_order">Order</button>
+        </div>
     </div>
     
     <div class="red_band">

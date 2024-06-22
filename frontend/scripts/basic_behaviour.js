@@ -436,3 +436,60 @@ function clear_order() {
     window.localStorage.removeItem('current_notes');
     window.location.reload();
 }
+
+function compute_subtotal() {
+    let total = 0;
+    for (const [index, quant] of Object.entries(order_list)) {
+        total += window.dishes[index].price * quant;
+    }
+    let subtotal = document.getElementById('subtotal');
+    subtotal.innerText = total;
+}
+
+function place_order() {
+    let order = [];
+    for (const [index, quant] of Object.entries(order_list)) {
+        let dish = window.dishes[index];
+        order.push({id: dish.id, quantity: quant, notes: dish_notes[index]});
+    }
+
+    fetch('/menu/order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
+        },
+        body: JSON.stringify(order)
+    })
+    .then((resp) => {
+        if(resp.status != 200) {
+            if(resp.status == 401) {
+                //Token invalid/expired
+                window.location.href = '/static/pages/login.html';
+            } else {
+                //This branch is unexpected (internal server error/server does not respond)
+                alert('Server responded with ' + resp.status);
+                resp.json()
+                .then((body) => console.log(JSON.stringify(body)));
+            }
+        } else {
+            resp.json()
+            .then((body) => {
+                console.log(JSON.stringify(body));
+                alert('Order placed successfully');
+                window.localStorage.removeItem('current_order');
+                window.localStorage.removeItem('current_notes');
+                window.location.reload();
+            })
+            .catch((err) => {
+                //Server should always return json responses
+                console.log(JSON.stringify(err));
+                alert('An error occurred');
+            })
+        }
+    })
+    .catch((err) => {
+        console.log(JSON.stringify(err));
+        alert('An error occurred');
+    })
+}
