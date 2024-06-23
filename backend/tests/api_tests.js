@@ -5,11 +5,21 @@ const should = require('should')
 const jest = require('jest')
 const { default: expect } = require('expect')
 
-let token = "";
+let token = ""; //Global token to perform most actions
+//Global test variables that are set by one test case
+//and used by another
 let dish0 = null;
 let dish1 = null;
 let orderid = null;
 let table1 = null;
+
+/**Automatic tests using Mocha*/
+
+/**Multiple tests are performed on the same API endpoint, testing 
+ * all status codes
+ */
+
+/**Test login functionality */
 
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
@@ -35,7 +45,7 @@ describe('POST /users/login', async() => {
         expect(resp.headers['content-type']).toContain('application/json');
         expect(resp.body).toHaveProperty('jwt');
         console.log(`Received token: ${resp.body.jwt}`);
-        token = resp.body.jwt;
+        token = resp.body.jwt; //Save for later use
     })
 })
 
