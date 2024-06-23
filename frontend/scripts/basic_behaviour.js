@@ -160,6 +160,7 @@ window.onload = (ev) => {
     let table = window.localStorage.getItem('table_id');
 
     if(table == null || isNaN(table) || table == "") {
+        alert('Please insert valid table id');
         window.location.href = '/static/pages/login.html';
         return;
     }
