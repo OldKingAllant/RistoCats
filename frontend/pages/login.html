@@ -62,6 +62,9 @@
 </head>
 <body>
     <script>
+        /**
+         * Redirects to generated login url
+        */
         function handle_response(resp) {
             if(resp.status != 200) {
                 alert('An unexpected error has occurred, try again');
@@ -78,6 +81,10 @@
             }
         }
 
+        /**
+         * Requests server-side generated login url
+         * and sets table id in local storage (even if not used)
+        */
         function request_login_url() {
             let id_number = document.getElementById('id_number').value;
             window.localStorage.setItem('table_id', id_number);

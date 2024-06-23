@@ -17,10 +17,13 @@ var element = document.getElementById("example");
 //Creando la list
 let list = [];
 
-/*
-id: ID del tavolo
-b: true se libero, false se occupato
-*/
+/**
+ * 
+ * @param {*} id Numeric table id
+ * @param {*} isfree True=set as available
+ * 
+ * Changes table status on the server
+ */
 async function set_table_status(id, isfree){
 	var sito = "/tables/" + id + "/status";
 
@@ -45,6 +48,9 @@ async function set_table_status(id, isfree){
 	console.log(await res.json());
 }
 
+/**
+ * Retrieves all tables from the server
+ */
 async function get_all_tables(){
 	const res = await fetch("/tables/all_tables", {
 			method: "GET",
@@ -66,6 +72,13 @@ async function get_all_tables(){
 	get_all_tables2();
 }
 
+/**
+ * 
+ * @param {*} id Table id
+ * @param {*} element HTML <select> element associated to the table
+ * 
+ * Helper function for setting table status
+ */
 function change_status_clicked(id, element) {
 	let value = element.value;
 	console.log(`Change table ${id} status to ${value}`);
@@ -74,8 +87,8 @@ function change_status_clicked(id, element) {
 }
 
 async function get_all_tables2(){
-	
 	const tab = "Table";
+
 	for(let i = 0; i < list.length; i++){
 		var identificatore = tab.toString() + list[i].tableid.toString();
 		var numero = identificatore + ":";
@@ -114,6 +127,9 @@ async function get_all_tables2(){
 	}
 }
 
+/**
+ * Generates list with dish name and dish statistics
+ */
 async function show_statistics() {
 	let all_dishes = await fetch('/menu/all_dishes?lang=en', {
 		headers: myHeaders,

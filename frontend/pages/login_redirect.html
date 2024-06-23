@@ -5,6 +5,7 @@
     </head>
     <body>
         <script>
+            /*Requests user home from server and redirects the user to it*/
             function home_redirect(token) {
                 fetch('/users/home', {
                     redirect: "follow",
@@ -24,6 +25,7 @@
                 })
             }
 
+            /*Saves jwt token*/
             function handle_response(resp) {
                 if(resp.status != 200) {
                     alert('An error occurred');
@@ -41,8 +43,10 @@
                 }
             }
 
+            /*Retrieve google token passed through search params*/
             let page_url = new URLSearchParams(window.location.search);
             console.log(page_url.get('code'));
+            /*Send to server login endpoint*/
             fetch('/users/login', {
                 method: 'POST', 
                 headers: {

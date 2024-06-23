@@ -32,13 +32,17 @@ function generatepopup(id, closer) {
     
     modal.style.display = 'block';
 
+    //The close handlers also retrieve the current inserted notes and
+    //store them in a dish-id dependent location
+
     span.onclick = function() {
         modal.style.display = 'none';
-        if (is_dish){
-            is_dish = false;
+        if (is_dish){ //If the dialog was opened through the notes buttons
+            is_dish = false; //Set as closed
             let notes_text= document.getElementById('submitted_text');
-            dish_notes[dish_index] = notes_text.value;
-            window.localStorage.setItem('current_notes', JSON.stringify(dish_notes));
+            dish_notes[dish_index] = notes_text.value; //Store current notes
+            window.localStorage.setItem('current_notes', JSON.stringify(dish_notes)); //Store notes in localStorage to 
+                                                                                      //survive page reloads
         }
     }
 
@@ -127,9 +131,10 @@ function create_menu_entries(menu) {
 
     //Restore order from previous session
     for(const [index, quant] of Object.entries(order_list)) {
-        if(quant <= 0) {
+        if(quant <= 0) { //First sanitize quantity, remove invalid entries
             delete order_list[index];
         } else {
+            //Generate page content as if the dish has just been added
             let total_container = document.createElement('div');
             total_container.id = `total_entry_${index}`;
             total_container.className = 'total_entries';
@@ -149,7 +154,6 @@ function create_menu_entries(menu) {
     }
 
     compute_subtotal();
-
 }
 
 window.onload = (ev) => {
@@ -398,6 +402,8 @@ function change_lang() {
 
 function add_to_order(index) {
     if (order_list[index] == undefined) {
+        //Add to list and generate total entry at the 
+        //bottom of the page
         order_list[index] = 1;
 
         let total_container = document.createElement('div');
@@ -414,6 +420,7 @@ function add_to_order(index) {
         sunto_container.appendChild(total_container);
         
     } else {
+        //Only increment in list and update counters
         order_list[index] += 1;
         let total_quantity = document.getElementById(`quantity_${index}`)
         total_quantity.innerText = order_list[index];
@@ -432,6 +439,7 @@ function remove_from_order(index) {
     if (order_list[index] != undefined && order_list[index] > 0) {
         order_list[index] -= 1;
         if (order_list[index] == 0) {
+            //Remove from list and remove total entry
             let total_entry = document.getElementById(`total_entry_${index}`);
             let sunto_container = document.getElementById('suino');
             sunto_container.removeChild(total_entry);
@@ -441,6 +449,7 @@ function remove_from_order(index) {
                 delete dish_notes[index];
             }
         }else{
+            //Only update counter
             counter.innerText = order_list[index];
             let total_quantity = document.getElementById(`quantity_${index}`)
             total_quantity.innerText = order_list[index];
@@ -461,6 +470,10 @@ function clear_order() {
     window.location.reload();
 }
 
+/**
+ * As the name suggests, this computes the total from
+ * all the added dishes
+ */
 function compute_subtotal() {
     let total = 0;
     for (const [index, quant] of Object.entries(order_list)) {
@@ -470,8 +483,14 @@ function compute_subtotal() {
     subtotal.innerText = total;
 }
 
+/**
+ * 
+ * Places order on the server
+ */
 function place_order() {
     let order = [];
+
+    //First create the order with the correct format
     for (const [index, quant] of Object.entries(order_list)) {
         let dish = window.dishes[index];
         order.push({id: dish.id, quantity: quant, infos: dish_notes[index]==undefined ? "" : dish_notes[index]});
