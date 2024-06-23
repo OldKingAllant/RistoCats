@@ -254,7 +254,7 @@ class DatabaseDriver {
             { $set: {free: set_free} }
         );
 
-        return result.acknowledged && result.modifiedCount == 1;
+        return result.acknowledged;
     }
 
     /**
