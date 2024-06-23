@@ -22,6 +22,13 @@ const server_path = __dirname;
 let verify = require('./backend/login/verify')
 
 server.use(cors())
+server.use('/', async(req, resp, next) => {
+    if(req.path != '/') {
+        next();
+    } else {
+        resp.sendFile(__dirname + '/frontend/pages/index.html');
+    }
+})
 server.use('/static', express.static(__dirname + '/frontend'))
 
 server.use(bodyParser.urlencoded({ extended: true }));
