@@ -50,7 +50,7 @@ async function set_table_status(id, isfree){
 		}
 	}
 	
-	console.log(await res.json());
+	console.log(JSON.stringify(await res.json()));
 
 	let status_button = document.getElementById(`status_${id}`);
 	status_button.innerText = isfree ? "Available" : "Occupied";
