@@ -26,6 +26,11 @@ let list = [];
  */
 async function set_table_status(id, isfree){
 	var sito = "/tables/" + id + "/status";
+	if(list[id].free == isfree) {
+		return;
+	}
+
+	list[id].free = isfree;
 
 	console.log(sito);
 	
@@ -36,7 +41,7 @@ async function set_table_status(id, isfree){
 			free: isfree ? 'Y' : "N"
 		}),
 	});
-
+	
 	if (res.status != 200) {
 		if(res.status == 401) {
 			window.location.href = '/static/pages/login.html';
@@ -46,6 +51,9 @@ async function set_table_status(id, isfree){
 	}
 	
 	console.log(await res.json());
+
+	let status_button = document.getElementById(`status_${id}`);
+	status_button.innerText = isfree ? "Available" : "Occupied";
 }
 
 /**
@@ -72,60 +80,30 @@ async function get_all_tables(){
 	get_all_tables2();
 }
 
-/**
- * 
- * @param {*} id Table id
- * @param {*} element HTML <select> element associated to the table
- * 
- * Helper function for setting table status
- */
-function change_status_clicked(id, element) {
-	let value = element.value;
-	console.log(`Change table ${id} status to ${value}`);
-
-	set_table_status(id, value == 'Available' ? true : false);
-}
 
 async function get_all_tables2(){
 	const tab = "Table";
 
 	for(let i = 0; i < list.length; i++){
-		var identificatore = tab.toString() + list[i].tableid.toString();
-		var numero = identificatore + ":";
-		var tavolo = list[i].free;
-		
-		var currentDiv = document.getElementById("Tables");
-		
-		var select = document.createElement('select');
-		select.id = identificatore;
-		select.classList.add("dropdown-toggle");
-		select.onchange = () => { change_status_clicked(i, select) };
-		
-		var option1 = document.createElement('option');
-		option1.text = 'Available';
-		select.add(option1);
-		
-		var option2 = document.createElement('option');
-		option2.text = 'Occupied';
-		
-		if (tavolo == false){
-			option2.setAttribute("selected", "selected");
-		} else {
-			option1.setAttribute("selected", "selected");
-		}
-		select.add(option2);
-		
-		currentDiv.parentNode.insertBefore(select, currentDiv.nextSibling);
-		
-		var lab = document.createElement('label');
-		lab.setAttribute('for', 'identificatore');
-		lab.textContent = numero;
-		
-		var br = document.createElement("br");
-		currentDiv.parentNode.insertBefore(lab, currentDiv.nextSibling);
-		currentDiv.parentNode.insertBefore(br, currentDiv.nextSibling);
+		let table_list = document.createElement('div');
+        table_list.className = 'entry';
+        table_list.innerHTML = 
+        `
+		<div class="name">Table ${i+1}</div> 
+		<div class="dropdown">
+			<button class="dropbtn" id="status_${i}">${list[i].free == true ? "Available" : "Occupied"}</button>
+			<div class="dropdown-content">
+				<a href="javascript:set_table_status(${i}, true)">Available</a>
+				<a href="javascript:set_table_status(${i}, false)">Occupied</a>
+			</div>
+		</div>
+        `
+		let table_container = document.getElementById('body_tables');
+        table_container.appendChild(table_list);
 	}
 }
+
+
 
 /**
  * Generates list with dish name and dish statistics
@@ -148,22 +126,15 @@ async function show_statistics() {
 
 	console.log(JSON.stringify(dish_list));
 
-	let names = document.getElementById('stat_dish_name');
-	let quants = document.getElementById('stat_dish_quant');
-
-	dish_list.list.forEach((dish, index) => {
-		let name = document.createElement('div');
-		let stat = document.createElement('div');
-
-		name.innerText = dish.name;
-		stat.innerText = dish.statistics;
-
-		names.appendChild(name);
-		quants.appendChild(stat);
-	})
+	for(let i = 0; i < dish_list.list.length; i++){
+		let stat_list = document.createElement('div');
+			stat_list.className = 'entry';
+			stat_list.innerHTML = 
+			`
+			<div class="name">${dish_list.list[i].name}</div>
+			<div class="counter">${dish_list.list[i].statistics}</div>
+			`
+		let statistic_entry = document.getElementById('statistics_tables');
+		statistic_entry.appendChild(stat_list);
+	}
 }
-
-
-
-
-
