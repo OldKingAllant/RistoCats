@@ -37,6 +37,7 @@ router.get('/verify', async(req, resp, next) => {
 })
 
 router.get('/loginurl', (req, resp, next) => {
+    //Generate url
     const url = process.oauth_client.generateAuthUrl({
         scope: 'https://www.googleapis.com/auth/userinfo.email'
     })
@@ -65,12 +66,13 @@ router.post('/login', async(req, resp, next) => {
         let mail = "";
         let id_token = null;
 
+        //NOT SAFE
         if(req.body.test != undefined) {
             mail = "mario.rossi@studenti.unitn.it";
         } else {
             try {
-                let {tokens} = await process.oauth_client.getToken(req.body.token);
-                let content = await verify.extract_token_payload(tokens.id_token);
+                let {tokens} = await process.oauth_client.getToken(req.body.token); //Retrive tokens using code
+                let content = await verify.extract_token_payload(tokens.id_token);  //extract data
                 mail = content.mail;
                 id_token = tokens.id_token;
             } catch(err) {
@@ -91,6 +93,7 @@ router.post('/login', async(req, resp, next) => {
             return;
         }
 
+        //Create JWT and sign it
         const jwt = jsonwebtoken.sign({"mail": mail, "google_token": id_token, 
             "role": user.role, "test": req.body.test != undefined
         }, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_TTL });

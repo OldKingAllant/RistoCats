@@ -2,8 +2,10 @@ const express = require('express')
 let orders = express.Router()
 
 function verify_dish(dish, menu) {
+    //first verify that all attributes are in place
     if(dish.id == undefined || dish.quantity == undefined || dish.infos == undefined) return false;
     
+    //verify that dish exists and is active
     return menu.find((elem) => elem.id == dish.id) != null;
 }
 
@@ -37,6 +39,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
+        //Retrieve menu and verify against order
         let menu = await process.db_driver.getMenu(req.query.lang);
 
         let all_respect_format = req.body.dishes.every((elem) => verify_dish(elem, menu));
@@ -48,6 +51,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
+        //Generate DB order record
         let order = {
             tableid: Number(req.params.tableid),
             dishes: req.body.dishes
@@ -55,6 +59,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
 
         let result = await process.db_driver.placeOrder(order);
 
+        //Update stats of dishes in order
         for(dish of req.body.dishes) {
             await process.db_driver.updateStats(dish.id, dish.quantity);
         }

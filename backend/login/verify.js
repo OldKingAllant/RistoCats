@@ -1,5 +1,11 @@
 const jwt = require('jsonwebtoken')
 
+/**
+ * "verifies" email by checking if it
+ * is in the database
+ * @param {*} payload JWT payload
+ * @returns 
+ */
 function verify_mail(payload) {
     if(payload.mail == null) {
         return false;
@@ -9,6 +15,12 @@ function verify_mail(payload) {
     return process.db_driver.getUserByMail(payload.mail) != null;
 }
 
+/**
+ * Extracts payload from google ticket
+ * 
+ * @param {*} token Google ID token
+ * @returns 
+ */
 async function extract_token_payload(token) {
     const ticket = await process.oauth_client.verifyIdToken({
         idToken: token,
@@ -23,6 +35,16 @@ async function extract_token_payload(token) {
     };
 }
 
+/**
+ * Tries to extract payload from google ticket,
+ * returns true if success, false if exception.
+ * Also checks if the mail in the payload
+ * corresponds to the one in the jwt
+ * 
+ * @param {*} token Google ID token
+ * @param {*} mail Email
+ * @returns 
+ */
 async function verify_google_token(token, mail) {
     try {
         let payload = await extract_token_payload(token);
@@ -37,6 +59,15 @@ async function verify_google_token(token, mail) {
     return true;
 }
 
+/**
+ * 1. Verify JWT signature and extract payload
+ * 2. Verify mail in DB
+ * 3. Verify google ID token
+ * 
+ * @param {*} token JWT
+ * @param {*} the_secret JWT secret
+ * @returns Decoded payload or false
+ */
 async function verify_token(token, the_secret) {
     let decoded = null;
     try { decoded = jwt.verify(token, the_secret) }

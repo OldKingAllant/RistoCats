@@ -1,8 +1,12 @@
 const express = require('express')
 let menu = express.Router()
 
+/**
+ * Route used to retrive active menu
+ */
 menu.get('/overview', async(req, resp, next) => {
     try {
+        //Check roles 
         if(req.user_role != 'admin' && req.user_role != 'table') {
             resp.status(403)
             .contentType('application/json')
@@ -10,6 +14,7 @@ menu.get('/overview', async(req, resp, next) => {
             return;
         }
 
+        //lang parameter is required
         if(req.query.lang == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -104,6 +109,8 @@ menu.post('/modify', async(req, resp, next) => {
             return;
         }
 
+        //all entries in list must have format :
+        //dish_id : Y/N
         let respects_format = req.body.list.every((elem) => {
             return elem.id != undefined && elem.enable != undefined && (
                 elem.enable == 'Y' || elem.enable == 'N'
@@ -117,6 +124,7 @@ menu.post('/modify', async(req, resp, next) => {
             return;
         }
 
+        //Apply changes one dish at a time
         for(dish of req.body.list) {
             let result = await process.db_driver.enableDish(dish.id, 
                 dish.enable == 'Y'

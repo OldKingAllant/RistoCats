@@ -5,6 +5,10 @@ const DbDriver = require('./backend/database/driver')
 const cors = require('cors')
 const google = require('googleapis')
 
+/**
+ * Create database driver and Google OAuth client
+ * and save them in global variables
+ */
 let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
 
 const oauth_client = new google.Auth.OAuth2Client({
@@ -22,6 +26,8 @@ const server_path = __dirname;
 let verify = require('./backend/login/verify')
 
 server.use(cors())
+
+//Default base route, redirects to index page
 server.use('/', async(req, resp, next) => {
     if(req.path != '/') {
         next();
@@ -29,11 +35,16 @@ server.use('/', async(req, resp, next) => {
         resp.sendFile(__dirname + '/frontend/pages/index.html');
     }
 })
+
+//Serve static files
 server.use('/static', express.static(__dirname + '/frontend'))
 
+//urlencoded + json parsers
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json())
 
+//If the request reaches here, verify if the db driver is connected
+//to the mongodb server and if not do the connection
 server.use(async(req, resp, next) => {
     if(!driver.is_connected) {
         process.db_driver = driver;
@@ -55,20 +66,28 @@ let orders = require('./backend/routers/orders')
 let user_pages = require('./backend/frontend_router')
 let tables = require('./backend/routers/table')
 
+//Route to verify if server is active, will always
+//respond, not auth required
 server.get('/alive', (req, resp) => {
     resp.status(200)
         .contentType('application/json')
         .json({"status": "running"});
 })
 
+
+//Middleware used to verify token
 server.use(async(req, resp, next) => {
     const route = req.path;
+
+    //Exclude routes that do not require auth
     if(route == '/users/login' || route == '/users/verify' || route == '/alive' ||
         route == '/users/loginurl'
     ) {
         next();
         return;
     }
+
+    //Extract jwt from authorization header
 
     if(req.headers['authorization'] == null) {
         resp.status(401)
@@ -85,6 +104,10 @@ server.use(async(req, resp, next) => {
         return;
     }
 
+    //Verify :
+    //1. JWT signature
+    //2. Mail contained in payload
+    //3. Google ID token
     let token_or_err = await verify.verify_token(authorization[1], process.env.JWT_SECRET);
 
     if(token_or_err == false) {
@@ -98,14 +121,18 @@ server.use(async(req, resp, next) => {
     next();
 })
 
+//Set all other routes
 server.use('/users', users)
 server.use('/menu', menu)
 server.use('/orders', orders)
 server.use(user_pages)
 server.use('/tables', tables)
 
+//Middleware used to handle internal server errors to 
+//not leak callstacks
 server.use((err, req, resp, next) => {
     console.log(`Internal error: ${err.message}`);
+    console.log(new Error().stack);
     resp.status(err.status || 500)
         .contentType('application/json')
         .json({"valid": false, "internal error": err.message});

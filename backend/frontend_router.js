@@ -1,6 +1,8 @@
 const express = require('express')
 let frontend_routes = express.Router()
 
+//This file is unused
+
 frontend_routes.get('/pages', (req, resp, next) => {
     //Token has already been verified
     //Here we should select the page based on 
