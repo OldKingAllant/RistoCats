@@ -357,7 +357,7 @@ describe('DELETE /orders/<id>/dish/<dishid>', async() => {
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
-        .send({"quantity": 10})
+        .query({"quantity": 10})
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');

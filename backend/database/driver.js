@@ -122,7 +122,7 @@ class DatabaseDriver {
             { $set: { tags: ['Piatto', enable_string] } }
         );
 
-        return result.acknowledged && result.modifiedCount == 1;
+        return result.acknowledged;
     }
 
 

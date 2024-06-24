@@ -132,7 +132,7 @@ orders.delete('/:id/dish/:dishid', async(req, resp, next) => {
             return;
         }
 
-        let quantity = req.body.quantity;
+        let quantity = req.query.quantity;
 
         if(isNaN(Number(quantity))) {
             resp.status(400)
