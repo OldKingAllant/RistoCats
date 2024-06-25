@@ -109,7 +109,6 @@
     .whiteband .body{
         display: flex;
         position: relative;
-        border:1px solid black;
         margin-top: 25px;
         margin-bottom: 60px;
         height: 700px;
@@ -146,7 +145,6 @@
         justify-content: space-around;
         align-items: center;
         height: 20%;
-        border: 1px solid black;
         width: 99%;
         flex-shrink: 0;
     }
@@ -310,7 +308,8 @@
     }
 
     .logout_button{
-            top: 100px;
+            position: absolute;
+            top: 140px;
             right: 100px;
             color: #f1dfbb;
             font-size: 35px;
@@ -320,11 +319,145 @@
             border-radius: 5px; 
     }
 
+    .text .notes{
+            background-color: #c50d0d;
+            background-image: url('../assets/images/note_120060.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 70px;
+            height: 70px;
+            border: 1px solid #f1dfbb;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            margin-top: 180px;
+            margin-left: 0px;
+            overflow: auto;
+            width: 1000px;
+            height: 600px;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+        }
+        .modal-contenuto {
+                background-color: #fefefe;
+                margin: auto;
+                margin-top: 25px;
+                height: 90%;
+                border: 1px solid #888;
+                width: 80%;
+        }
+
+            .closing {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .closing:hover,
+            .closing:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        
+            .modalnotes {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            margin-top: 180px;
+            margin-left: 0px;
+            overflow: auto;
+            width: 1000px;
+            height: 600px;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+        }
+
+            .modalnotes-content {
+            background-color: #f1dfbb;
+            width: 850px;
+            height: 450px;
+            opacity: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: auto;
+        }
+        
+        .userInput {
+            width: 850px;
+            height: 450px;
+            background-color: #f1dfbb;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 35px;
+        }
+
+        .whiteband .save_button{
+            width: 35%;
+            color: #f1dfbb;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+            display: flex;
+            justify-content: center;
+            margin-top: 0px;
+            font-size: 80px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 110px;
+        }
+
+        .whiteband .body .sawsbuck{
+            width: 40%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .volcarona{
+            width: 15%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .chandelure{
+            width: 15%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .reuniculus{
+            background-color: #c50d0d;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 20%;
+            border: 1px solid #f1dfbb;
+            justify-content: center;
+            margin-right: 30px;
+            font-size: 55px;
+            color: #f1dfbb;
+        }
+
+        .whiteband .body .reuniculus2{
+            background-color: transparent;
+            width: 20%;
+            justify-content: center;
+            margin-right: 30px;
+            font-size: 55px;
+        }
+
 </style>
 </head>
 <body>
-    <script defer src="../scripts/basic_behaviour_kitchen.js"></script> 
-    <script defer src="../scripts/common.js"></script>
+    <script src="../scripts/basic_behaviour_kitchen.js"></script> 
+    <script src="../scripts/common.js"></script>
 
     
     <div class="redband"> 
@@ -351,55 +484,56 @@
     
 
     <div class="whiteband">
+
+        <div id="popup" class="modalnotes">
+            <div class="modalnotes-content">
+                <span class="close"></span>
+                <div class="userInput" id="note_area"></div>
+              
+              <p id="modalText"></p>
+            </div>
+          </div>
+
+
         <div class="heading">
             <div class="noselect" id="ordering"><h2>Order List</h2></div>            
         </div>
-        <div class="body">
+        <div class="body" id="orders_container">
+
+
             <div class="entry">
-                                    
+                <div class="sawsbuck">Fish Name</div>
+                <div class="volcarona">Qt.</div>
+                <div class="chandelure">Table</div>
+                <div class="text">
+                    <div class="reuniculus2"></div>
+                </div>
+                <div class="reuniculus2"></div>
             </div>
+
         </div>
         <div class="heading">
             <div class="noselect" id="modifier"><h2>Modify Menu</h2></div>            
         </div>
-        <div class="body">
-            <div class="entry">
-                <div class="text">
-                    <div class="noselect" id="entry_text">Lorem ipsum </div>
-                </div>
-                <div class="includer">
-                    <input type="checkbox" id="myCheckbox1">
-                    <label for="myCheckbox1" class="customcheckbox">
-                        <div class="noselect"><span class="checkmark">&#10003;</span></div>
-                        
-                    </label>
-                </div>
-                
-                <button class="modify">Modify</button>
-            </div>
 
-            <button class="addnew" id="adder_button">+</div>
+        <div class="body" id="mod_menu_container">
+            
+
+            
+            
         </div>
 
+        
 
-        <dialog id="modify_entry">
-            <div  class="popup_background">
-                <div class="name"> Lorem ipsum</div>
-                <div class="center">
-                    <div class="image">Img here</div>
-                    <div class="description">
-                        <div class="text">Lorem ipsum</div>
-                        <div class="cost">$ 14.99</div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <button id="closing" class="save_button" >Save</button>
-                </div>
-            </div>
-        </dialog>
+        <button class="save_button" onclick="saveMod()">save changes</button>
+
+
+
+
     </div>
 
     
-
+    <script>fetchOrders()</script>
+    <script>fetchMenu()</script>
 </body>
 </html>
