@@ -107,6 +107,11 @@ router.post('/login', async(req, resp, next) => {
 })
 
 router.get('/home', async(req, resp, next) => {
+    resp.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, proxy-revalidate'
+    );
+
     if(req.user_role == 'admin') {
         resp.redirect(301, '/static/pages/customerview.html');
     } else if(req.user_role == 'dining_hall') {
