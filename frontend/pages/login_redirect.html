@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Redirect</title>
+    </head>
+    <body>
+        <script>
+            /*Requests user home from server and redirects the user to it*/
+            function home_redirect(token) {
+                fetch('/users/home', {
+                    redirect: "follow",
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then((resp) => {
+                    if(resp.redirected) {
+                        window.location.href = resp.url;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    alert('Redirect failed');
+                })
+            }
+
+            /*Saves jwt token*/
+            function handle_response(resp) {
+                if(resp.status != 200) {
+                    alert('An error occurred');
+                } else {
+                    resp.json()
+                        .then((body) => {
+                            console.log(body.jwt);
+                            window.localStorage.setItem('jwt', body.jwt);
+                            home_redirect(body.jwt);
+                        })
+                        .catch((err) => {
+                            console.log('Invalid response');
+                            alert('An error occurred');
+                        })
+                }
+            }
+
+            /*Retrieve google token passed through search params*/
+            let page_url = new URLSearchParams(window.location.search);
+            console.log(page_url.get('code'));
+            /*Send to server login endpoint*/
+            fetch('/users/login', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({'token': page_url.get('code')})
+            })
+            .then(handle_response)
+            .catch((err) => {
+                console.log(`${err}`);
+                alert('An error occurred');
+            })
+        </script>
+    </body>
+</html>

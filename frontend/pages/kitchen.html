@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+<style>
+
+    .noselect {
+        user-select: none; 
+        -webkit-user-select: none;
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+    }
+
+    .redband {
+        background-color: #c50d0d;
+        width: 25%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 0 20px 10px;
+    }
+
+    .redband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+        align-items: center;
+    }
+
+    .redband .heading .logo {
+        width: 35%;
+        border-radius: 50%;
+        background-color: #f1dfbb;
+        border: 1px solid black;
+    }
+
+    .redband .heading .logo img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .redband .heading .welcometext {
+        width: 40%;
+        color: #f1dfbb;
+        font-size: 38px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    .redband .body {
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 60%;
+    }
+
+    .redband .body .body_buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-around;
+        align-items: center;
+        height: 100%;
+    }
+
+    .redband .body .body_buttons .button {
+        border: 2px solid #f1dfbb;
+        box-sizing: border-box;
+        width: 90%;
+        height: 20%;
+        background-color: #c50d0d;  
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 65px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+    }
+
+    .whiteband {
+        background-color: #f1dfbb;
+        width: 71%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 20px 20px 10px;
+        overflow: auto;
+    }
+
+    .whiteband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px 15px 15px 15px;
+        align-items: center;
+        color: #c50d0d;
+        font-size: 120px;
+        height: 10%;
+        margin-top: 30px;
+    }
+
+    .whiteband .body{
+        display: flex;
+        position: relative;
+        margin-top: 25px;
+        margin-bottom: 60px;
+        height: 700px;
+        padding: 20px;
+        flex-shrink: 0;
+        overflow: auto;
+        flex-direction: column;
+    }
+
+    .whiteband .body::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband .body::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband .body .entry {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        height: 20%;
+        width: 99%;
+        flex-shrink: 0;
+    }
+
+
+    .whiteband .body .entry .text {
+        width: 40%;
+        height: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;    
+        font-size: 80px;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+    }
+
+    .whiteband .body .entry .includer {
+        height: 70%;
+        width:10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+    }
+
+    .includer input[type="checkbox"] {
+        display: none;
+    }
+    
+    .includer .customcheckbox {
+        width: 70px;
+        height: 70%;
+        border: 2px solid #c50d0d;
+        background: #f1dfbb;
+    }
+
+    .includer input[type="checkbox"]:checked + .customcheckbox {
+        background: #f1dfbb;
+    }
+
+    .includer .customcheckbox .checkmark {
+        display: none;
+        color: #c50d0d;
+        font-size: 78px;
+    }
+
+    .includer input[type="checkbox"]:checked + .customcheckbox .checkmark {
+        display: block;
+    }
+
+    .whiteband .body .entry .modify {
+        height: 70%;
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        border: 2px solid #c50d0d;
+        background: #c50d0d;
+        font-size: 35px;
+    }
+
+    .whiteband .body .addnew {
+        position:sticky;
+        background-color: #c50d0d;
+        right: 20px;
+        bottom: 20px;
+        align-self: flex-end;
+        height: 130px;
+        width: 130px;
+        font-size: 80px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        font-weight: bold;
+        border-radius: 80px;
+        margin-top: 20px;
+        
+    }
+
+    .popup_background {
+        background-color: #f1dfbb;
+        width: 1000px;
+        height: 800px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .popup_background .name {
+        width: 90%;
+        height: 15%;
+        font-size: 100px;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+        text-align: center;
+    }
+
+    .popup_background .center {
+        width: 95%;
+        height: 60%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .image {
+        width: 45%;
+        height: 90%;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .description {
+        width: 45%;
+        height: 95%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        color: black;
+    }
+
+    .popup_background .center .description .text {
+        width: 90%;
+        height: 80%;
+        font-size: 40px;
+        font-family: "Times New Roman", Times, serif;
+        text-align: center;
+        border: 1px solid black;
+    }
+
+    .popup_background .center .description .cost {
+        width: 90%;
+        height: 15%;
+        font-size: 55px;
+        font-family: "Times New Roman", Times, serif;
+        text-align: center;
+    }
+
+    .popup_background .footer {
+        width: 90%;
+        height: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup_background .footer .save_button {
+        width: 30%;
+        height: 90%;
+        font-size: 50px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+        background-color: #c50d0d;
+        border: 2px solid #c50d0d;
+        border-radius: 10px;
+    }
+
+    .logout_button{
+            position: absolute;
+            top: 140px;
+            right: 100px;
+            color: #f1dfbb;
+            font-size: 35px;
+            background-color: #c50d0d;
+            border-color: #f1dfbb; 
+            font-family: "Times New Roman", Times, serif;
+            border-radius: 5px; 
+    }
+
+    .text .notes{
+            background-color: #c50d0d;
+            background-image: url('../assets/images/note_120060.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 70px;
+            height: 70px;
+            border: 1px solid #f1dfbb;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            margin-top: 180px;
+            margin-left: 0px;
+            overflow: auto;
+            width: 1000px;
+            height: 600px;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+        }
+        .modal-contenuto {
+                background-color: #fefefe;
+                margin: auto;
+                margin-top: 25px;
+                height: 90%;
+                border: 1px solid #888;
+                width: 80%;
+        }
+
+            .closing {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .closing:hover,
+            .closing:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        
+            .modalnotes {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            margin-top: 180px;
+            margin-left: 0px;
+            overflow: auto;
+            width: 1000px;
+            height: 600px;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+        }
+
+            .modalnotes-content {
+            background-color: #f1dfbb;
+            width: 850px;
+            height: 450px;
+            opacity: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: auto;
+        }
+        
+        .userInput {
+            width: 850px;
+            height: 450px;
+            background-color: #f1dfbb;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 35px;
+        }
+
+        .whiteband .save_button{
+            width: 35%;
+            color: #f1dfbb;
+            background-color: #c50d0d;
+            border: 2px solid #f1dfbb;
+            display: flex;
+            justify-content: center;
+            margin-top: 0px;
+            font-size: 80px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 110px;
+        }
+
+        .whiteband .body .sawsbuck{
+            width: 40%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .volcarona{
+            width: 15%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .chandelure{
+            width: 15%;
+            color: #c50d0d;
+            font-size: 60px;
+            text-align: center;
+        }
+
+        .whiteband .body .reuniculus{
+            background-color: #c50d0d;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 20%;
+            border: 1px solid #f1dfbb;
+            justify-content: center;
+            margin-right: 30px;
+            font-size: 55px;
+            color: #f1dfbb;
+        }
+
+        .whiteband .body .reuniculus2{
+            background-color: transparent;
+            width: 20%;
+            justify-content: center;
+            margin-right: 30px;
+            font-size: 55px;
+        }
+
+</style>
+</head>
+<body>
+    <script src="../scripts/basic_behaviour_kitchen.js"></script> 
+    <script src="../scripts/common.js"></script>
+
+    
+    <div class="redband"> 
+        <div class="heading">
+            <div class="logo">
+                <img src="../assets/images/ristotrositras.png" alt="logo">
+            </div>
+            <div class="welcometext">
+                <div class="noselect"><h3>Welcome, Kitchen</h3></div>                
+            </div>
+        </div>
+        <div class="body">
+            <div class="body_buttons">
+                <button class="logout_button" onclick="perform_logout()">Logout</button>
+                <button class="button" onclick="indexto('ordering')">
+                    <div class="noselect" id="order">Order</div>
+                </button>
+                <button class="button" onclick="indexto('modifier')">
+                    <div class="noselect">Modify Menu</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="whiteband">
+
+        <div id="popup" class="modalnotes">
+            <div class="modalnotes-content">
+                <span class="close"></span>
+                <div class="userInput" id="note_area"></div>
+              
+              <p id="modalText"></p>
+            </div>
+          </div>
+
+
+        <div class="heading">
+            <div class="noselect" id="ordering"><h2>Order List</h2></div>            
+        </div>
+        <div class="body" id="orders_container">
+
+
+            <div class="entry">
+                <div class="sawsbuck">Fish Name</div>
+                <div class="volcarona">Qt.</div>
+                <div class="chandelure">Table</div>
+                <div class="text">
+                    <div class="reuniculus2"></div>
+                </div>
+                <div class="reuniculus2"></div>
+            </div>
+
+        </div>
+        <div class="heading">
+            <div class="noselect" id="modifier"><h2>Modify Menu</h2></div>            
+        </div>
+
+        <div class="body" id="mod_menu_container">
+            
+
+            
+            
+        </div>
+
+        
+
+        <button class="save_button" onclick="saveMod()">save changes</button>
+
+
+
+
+    </div>
+
+    
+    <script>fetchOrders()</script>
+    <script>fetchMenu()</script>
+</body>
+</html>

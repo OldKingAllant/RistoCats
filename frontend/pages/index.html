@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Index</title>
+    </head>
+    <body>
+        <script>
+            async function home_redirect() {
+                const resp = await fetch('/users/home', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                redirect: "follow"
+                });
+
+                if(resp.status == 401) {
+                    window.location.href = '/static/pages/login.html';
+                } else {
+                    if(resp.redirected)
+                        window.location.href = resp.url;
+                }
+            }
+
+            let token = window.localStorage.getItem('jwt');
+
+            if(token == null) {
+                window.location.href = '/static/pages/login.html';
+            }
+
+            home_redirect();
+        </script>
+    </body>
+</html>

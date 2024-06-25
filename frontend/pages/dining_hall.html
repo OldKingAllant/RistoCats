@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+    <title>Dining Hall</title>
+<style>
+
+    .noselect {
+        user-select: none; 
+        -webkit-user-select: none;
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+    }
+
+    .redband {
+        background-color: #c50d0d;
+        width: 25%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 0 20px 10px;
+        justify-content: space-around;
+    }
+
+    .redband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+        align-items: center;
+    }
+
+    .redband .heading .logo {
+        width: 35%;
+        border-radius: 50%;
+        background-color: #f1dfbb;
+    }
+
+    .redband .heading .logo img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .redband .heading .text {
+        width: 60%;
+        height: 90%;
+        color: #f1dfbb;
+        font-size: 38px;
+        font-family: "Times New Roman", Times, serif;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+    }
+
+    .redband .heading .text .welcometext {
+        width: 90%;
+        color: #f1dfbb;
+        font-size: 38px;
+        font-family: "Times New Roman", Times, serif;
+        margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .redband .heading .text .logout_button{
+        color: #f1dfbb;
+        font-size: 35px;
+        background-color: #c50d0d;
+        border-color: #f1dfbb; 
+        font-family: "Times New Roman", Times, serif;
+        border-radius: 5px; 
+    }
+
+    .redband .body {
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 60%;
+    }
+
+    .redband .body .body_buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-around;
+        align-items: center;
+        height: 100%;
+    }
+
+    .redband .body .body_buttons .button {
+        border: 2px solid #f1dfbb;
+        box-sizing: border-box;
+        width: 90%;
+        height: 20%;
+        background-color: #c50d0d;  
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 60px;
+        font-family: "Times New Roman", Times, serif;
+        color: #f1dfbb;
+    }
+
+    
+
+    .whiteband {
+        background-color: #f1dfbb;
+        width: 71%;
+        display: flex;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        flex-direction: column;
+        position: fixed;
+        padding: 20px 20px 10px;
+        overflow: auto;
+    }
+
+    .whiteband .heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px 15px 15px 15px;
+        align-self: center;
+        color: #c50d0d;
+        font-size: 120px;
+        height: 15%;
+        margin-top: 30px;
+        border-bottom: 2px solid #c50d0d;
+        width: 80%;
+        text-align: center;
+    }
+
+    .whiteband .body{
+        display: flex;
+        position: relative;
+        margin-top: 25px;
+        margin-bottom: 60px;
+        height: 700px;
+        padding: 20px;
+        flex-shrink: 0;
+        overflow: auto;
+        flex-direction: column;
+    }
+
+    .whiteband .body::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband .body::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband::-webkit-scrollbar {
+        width: 10px; 
+        background: #f1dfbb;
+        }
+
+    .whiteband::-webkit-scrollbar-thumb {
+    background: #c50d0d; 
+    border-radius: 5px; 
+    }
+
+    .whiteband .body .entry {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .whiteband .body .entry .name {
+        width: 65%;
+        font-size: 70px;
+        font-family: "Times New Roman", Times, serif;
+        color: #c50d0d;
+        text-align: left;
+    }
+
+    .whiteband .body .entry .dropdown {
+        position: relative;
+        display: inline-block;
+        height: 100%;
+    }
+
+    .dropbtn {
+        background-color: #c50d0d;
+        color: #f1dfbb;
+        padding: 16px;
+        font-size: 45px;
+        border: none;
+        cursor: pointer;
+        height: 100%;
+        text-align: center;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #c50d0d;
+        width: 100%;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: #f1dfbb;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        font-size: 30px;
+        border: 1px solid black;
+
+    }
+
+    .dropdown-content a:hover {
+        background-color: #940a0a;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block; 
+    }
+
+    .dropdown:hover .dropbtn {
+        background-color: #940a0a;
+    }
+
+    .whiteband .body .entry .counter {
+        width: 20%;
+        font-size: 70px;
+        font-family: "Times New Roman", Times, serif; 
+        color: #c50d0d;
+        text-align: right;
+    }
+
+</style>
+</head>
+<body>
+    <script src="../scripts/basic_behaviour_dining_hall.js"></script> 
+    <script src="../scripts/common.js"></script>
+
+    
+    <div class="redband"> 
+        <div class="heading">
+            <div class="logo">
+                <img src="../assets/images/ristotrositras.png" alt="logo">
+            </div>
+            <div class="text">
+                <div class="welcometext">
+                <div class="noselect"><h3>Welcome, Dining Hall</h3></div>                
+                </div>
+                <button class="logout_button" onclick="perform_logout()">Logout</button>
+            </div>
+        </div>
+        <div class="body">
+            <div class="body_buttons">
+                
+                <button class="button" onclick="indexto('ordering')">
+                    <div class="noselect" id="order">Manage Tables</div>
+                </button>
+                <button class="button" onclick="indexto('modifier')">
+                    <div class="noselect">Dishes Statistics</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="whiteband">
+        <div class="heading">
+            <div class="noselect" id="ordering"><h2>Manage Tables</h2></div>            
+        </div>
+        <div class="body" id="body_tables">
+
+        </div>
+        <div class="heading">
+            <div class="noselect" id="modifier"><h2>Dishes Statistics</h2></div>            
+        </div>
+        <div class="body" id="statistics_tables">
+            <div class="entry">
+                
+            </div>
+        </div>
+
+
+    </div>
+
+    
+    <script>get_all_tables()</script>
+    <script>show_statistics()</script>
+</body>
+</html>
