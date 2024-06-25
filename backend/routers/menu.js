@@ -34,7 +34,7 @@ menu.get('/overview', async(req, resp, next) => {
 
 menu.get('/:id/properties', async(req, resp, next) => {
     try {
-        if(req.user_role != 'admin' && req.user_role != 'table') {
+        if(req.user_role != 'admin' && req.user_role != 'table' && req.user_role != 'kitchen') {
             resp.status(403)
             .contentType('application/json')
             .json({"valid": false, "reason": "unauthorized"});
