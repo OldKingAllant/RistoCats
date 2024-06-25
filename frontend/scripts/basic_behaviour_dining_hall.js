@@ -2,7 +2,6 @@
 const myHeaders = {
   'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
   'Content-Type': "application/json"
-  
 };
 
 /*Si occupa di far scorrere la pagina*/
@@ -43,7 +42,7 @@ async function set_table_status(id, isfree){
 	});
 	
 	if (res.status != 200) {
-		if(res.status == 401) {
+		if(res.status == 401 || res.status == 403) {
 			window.location.href = '/static/pages/login.html';
 		} else {
 			alert("AN ERROR HAS OCURRED!");
@@ -67,7 +66,7 @@ async function get_all_tables(){
 
 	const statusCode = res.status;
 	if (statusCode != 200){
-		if(statusCode == 401) {
+		if(statusCode == 401 || statusCode == 403) {
 			window.location.href = '/static/pages/login.html';
 		} else {
 			alert("AN ERROR HAS OCURRED!");
@@ -115,7 +114,7 @@ async function show_statistics() {
 	});
 
 	if(all_dishes.status != 200) {
-		if(all_dishes.status == 401) {
+		if(all_dishes.status == 401 || all_dishes.status == 403) {
 			window.location.href = '/static/pages/login.html';
 		} else {
 			alert("AN ERROR HAS OCURRED!");

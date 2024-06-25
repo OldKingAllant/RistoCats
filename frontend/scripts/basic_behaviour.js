@@ -190,7 +190,7 @@ window.onload = (ev) => {
     })
     .then((resp) => {
         if(resp.status != 200) {
-            if(resp.status == 401) {
+            if(resp.status == 401 || resp.status == 403) {
                 //Token invalid/expired
                 window.location.href = '/static/pages/login.html';
             } else {
@@ -514,7 +514,7 @@ function place_order() {
     })
     .then((resp) => {
         if(resp.status != 200) {
-            if(resp.status == 401) {
+            if(resp.status == 401 || resp.status == 403) {
                 //Token invalid/expired
                 window.location.href = '/static/pages/login.html';
             } else {

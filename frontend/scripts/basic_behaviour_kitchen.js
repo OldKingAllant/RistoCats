@@ -97,7 +97,7 @@ async function fetchOrders(){
 
 	const statusCode = res.status;
 	if (statusCode != 200){
-		if(statusCode == 401) {
+		if(statusCode == 401 || statusCode == 403) {
 			window.location.href = '/static/pages/login.html';
 		} else {
 			alert("AN ERROR HAS OCURRED!");
@@ -129,7 +129,7 @@ async function orderdisplay(list){
 
             const statusCode = res.status;
             if (statusCode != 200){
-                if(statusCode == 401) {
+                if(statusCode == 401 || statusCode == 403) {
                     window.location.href = '/static/pages/login.html';
                 } else {
                     alert("AN ERROR HAS OCURRED!");
@@ -173,7 +173,7 @@ async function removedish(id_order, id_dish, quantity){
 
     const statusCode = res.status;
     if (statusCode != 200){
-        if(statusCode == 401) {
+        if(statusCode == 401 || statusCode == 403) {
             window.location.href = '/static/pages/login.html';
         } else {
             alert("AN ERROR HAS OCURRED!");
@@ -201,7 +201,7 @@ async function fetchMenu(){
 
     const statusCode = res.status;
     if (statusCode != 200){
-        if(statusCode == 401) {
+        if(statusCode == 401 || statusCode == 403) {
             window.location.href = '/static/pages/login.html';
         } else {
             alert("AN ERROR HAS OCURRED!");
@@ -274,7 +274,7 @@ async function saveMod(){
 
     const statusCode = res.status;
     if (statusCode != 200){
-        if(statusCode == 401) {
+        if(statusCode == 401 || statusCode == 403) {
             window.location.href = '/static/pages/login.html';
         } else {
             alert("AN ERROR HAS OCURRED!");
