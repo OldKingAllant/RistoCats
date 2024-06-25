@@ -38,6 +38,7 @@ server.use('/', async(req, resp, next) => {
 
 //Serve static files
 server.use('/static', express.static(__dirname + '/frontend'))
+server.use('/docs', express.static(__dirname + '/docs/docs'))
 
 //urlencoded + json parsers
 server.use(bodyParser.urlencoded({ extended: true }));

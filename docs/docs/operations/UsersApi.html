@@ -1,0 +1,68 @@
+<div class="main-content">
+  <h2><a name=""></a></h2>
+  <p>This is the  API</p>
+
+  <h2><a name="getHome"></a>getHome</h2>
+  <hr>
+  <p></p>
+  <p>Returns the homepage of the logged in user</p>
+  <h3 class="section">URL</h3>
+  <code>//users/home</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model=""><a href=""></a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+  <h2><a name="getLoginUrl"></a>getLoginUrl</h2>
+  <hr>
+  <p></p>
+  <p>Generate login url and return it</p>
+  <h3 class="section">URL</h3>
+  <code>//users/loginurl</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="LoginUrl"><a href="">LoginUrl</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+  <h2><a name="login"></a>login</h2>
+  <hr>
+  <p></p>
+  <p>Generates JWT and returns it</p>
+  <h3 class="section">URL</h3>
+  <code>//users/login</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="inline_response_200"><a href="">inline_response_200</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+  <h2><a name="verifyToken"></a>verifyToken</h2>
+  <hr>
+  <p></p>
+  <p>Verifies jwt token and returns 200 or 401/400</p>
+  <h3 class="section">URL</h3>
+  <code>//users/verify</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="ValidRequest"><a href="">ValidRequest</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      <span class="param-in">Query: </span>
+      
+      
+      
+      <span class="param-name">jwt</span>
+      <span class="param-type">String</span>
+      
+      <p class="param-description">jwt token</p>
+	  </li>
+  </ul>
+</div>
