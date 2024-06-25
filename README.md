@@ -20,5 +20,13 @@ To all projects contributors:
   branch, one can do "git rm --cached <files>" to remove them from
   the index
 
-# Common testing
-- TODO
+# Usage
+1.	First, clone the dev or the executive branch in an empty directory: git clone https://github.com/OldKingAllant/RistoCats.git
+2.	After that, enter the project’s directory with “cd RistoCats”.
+3.	Then, we need to install the node dependencies by using “npm install”
+4.	Create a .env file at the root of the project’s and paste the necessary things 
+5.	Run the server with “node index.js”
+6.	If you want to access the API docs, run the server and go to http://localhost:5000/docs
+7.	After that, you can navigate to http://localhost:5000/ and you will be redirected to the login page
+8.	On the right of the login button insert an integer number and then click on login
+9.	Watch the “Test implementation” for the remaining instructions
