@@ -24,7 +24,7 @@ let list = [];
  * Changes table status on the server
  */
 async function set_table_status(id, isfree){
-	var sito = "/tables/" + id + "/status";
+	var sito = "/api/tables/" + id + "/status";
 	if(list[id].free == isfree) {
 		return;
 	}
@@ -34,7 +34,7 @@ async function set_table_status(id, isfree){
 	console.log(sito);
 	
 	const res = await fetch(sito, {
-		method: "POST",
+		method: "PUT",
 		headers: myHeaders, 
 		body: JSON.stringify({
 			free: isfree ? 'Y' : "N"
@@ -59,7 +59,7 @@ async function set_table_status(id, isfree){
  * Retrieves all tables from the server
  */
 async function get_all_tables(){
-	const res = await fetch("/tables/all_tables", {
+	const res = await fetch("/api/tables/overview?free=false", {
 			method: "GET",
 			headers: myHeaders,
 	});
@@ -108,7 +108,7 @@ async function get_all_tables2(){
  * Generates list with dish name and dish statistics
  */
 async function show_statistics() {
-	let all_dishes = await fetch('/menu/all_dishes?lang=en', {
+	let all_dishes = await fetch('/api/menu/overview?lang=en&filter_enable=false', {
 		headers: myHeaders,
 		method: 'GET'
 	});
@@ -125,13 +125,13 @@ async function show_statistics() {
 
 	console.log(JSON.stringify(dish_list));
 
-	for(let i = 0; i < dish_list.list.length; i++){
+	for(let i = 0; i < dish_list.dishes.length; i++){
 		let stat_list = document.createElement('div');
 			stat_list.className = 'entry';
 			stat_list.innerHTML = 
 			`
-			<div class="name">${dish_list.list[i].name}</div>
-			<div class="counter">${dish_list.list[i].statistics}</div>
+			<div class="name">${dish_list.dishes[i].name}</div>
+			<div class="counter">${dish_list.dishes[i].statistics}</div>
 			`
 		let statistic_entry = document.getElementById('statistics_tables');
 		statistic_entry.appendChild(stat_list);
