@@ -7,17 +7,33 @@
         <script>
             /*Requests user home from server and redirects the user to it*/
             function home_redirect(token) {
-                fetch('/users/home', {
-                    redirect: "follow",
+                fetch('/users/role', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then((resp) => {
-                    if(resp.redirected) {
-                        window.location.href = resp.url;
-                    }
+                    let cloned = resp.clone();
+
+                    resp.json()
+                    .then((val)=> {
+                        if(resp.status != 200) {
+                            console.log(`Error: ${JSON.stringify(val)}`);
+                            alert('An error occurred');
+                        } else {
+                            console.log(JSON.stringify(val.role));
+
+                            if(val.role == 'admin' || val.role == 'table') {
+                                window.location.href = '/static/pages/customerview.html';
+                            } else if(val.role == 'kitchen') {
+                                window.location.href = '/static/pages/kitchen.html';
+                            } else {
+                                window.location.href = '/static/pages/dining_hall.html';
+                            }
+                        }
+                    });
                 })
                 .catch((err) => {
                     console.log(err);
