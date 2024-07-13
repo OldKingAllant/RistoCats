@@ -108,6 +108,11 @@ router.post('/login', async(req, resp, next) => {
 
 router.get('/role', async(req, resp, next) => {
     try {
+        resp.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        
         resp.status(200)
             .header('Content-Type', 'application/json')
             .contentType('application/json')
