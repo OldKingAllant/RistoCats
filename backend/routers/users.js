@@ -110,6 +110,7 @@ router.get('/role', async(req, resp, next) => {
     try {
         resp.status(200)
             .header('Content-Type', 'application/json')
+            .contentType('application/json')
             .json({"valid": true, "role": req.user_role});
     } catch(except) {
         next(except);
