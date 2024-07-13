@@ -106,20 +106,19 @@ router.post('/login', async(req, resp, next) => {
     }
 })
 
-router.get('/home', async(req, resp, next) => {
-    resp.setHeader(
-        'Cache-Control',
-        'no-store, no-cache, must-revalidate, proxy-revalidate'
-    );
-
-    if(req.user_role == 'admin') {
-        resp.redirect(301, '/static/pages/customerview.html');
-    } else if(req.user_role == 'dining_hall') {
-        resp.redirect(301, '/static/pages/dining_hall.html');
-    } else if(req.user_role == 'kitchen') {
-        resp.redirect(301, '/static/pages/kitchen.html');
-    } else if(req.user_role == 'table') {
-        resp.redirect(301, '/static/pages/customerview.html');
+router.get('/role', async(req, resp, next) => {
+    try {
+        resp.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        
+        resp.status(200)
+            .header('Content-Type', 'application/json')
+            .contentType('application/json')
+            .json({"valid": true, "role": req.user_role});
+    } catch(except) {
+        next(except);
     }
 })
 
