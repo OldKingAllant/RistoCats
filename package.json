@@ -22,7 +22,6 @@
     "expect": "^29.7.0",
     "express": "^4.19.2",
     "googleapis": "^137.1.0",
-    "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
     "mocha": "^10.4.0",
     "mongodb": "^6.6.2",
