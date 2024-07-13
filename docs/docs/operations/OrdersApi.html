@@ -2,16 +2,16 @@
   <h2><a name=""></a></h2>
   <p>This is the  API</p>
 
-  <h2><a name="ordersOrderidDetailsGet"></a>ordersOrderidDetailsGet</h2>
+  <h2><a name="getOrderDetails"></a>getOrderDetails</h2>
   <hr>
   <p></p>
   
   <h3 class="section">URL</h3>
-  <code>//orders/{orderid}/details</code>
+  <code>//api/orders/{orderid}/details</code>
   <h3 class="section">HTTP Method</h3>
   <code>GET</code>
   <h3 class="section">Response Type</h3>
-  <div class="model" data-model="inline_response_200_3"><a href="">inline_response_200_3</a></div>
+  <div class="model" data-model="inline_response_200_4"><a href="">inline_response_200_4</a></div>
   <h3 class="section">Parameters</h3>
   <ul>
 	  <li class="parameter">
@@ -26,12 +26,60 @@
       <p class="param-description"></p>
 	  </li>
   </ul>
-  <h2><a name="ordersOrderidDishDishidDelete"></a>ordersOrderidDishDishidDelete</h2>
+  <h2><a name="getOrders"></a>getOrders</h2>
+  <hr>
+  <p></p>
+  
+  <h3 class="section">URL</h3>
+  <code>//api/orders/remaining</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="inline_response_200_3"><a href="">inline_response_200_3</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+  <h2><a name="placeOrder"></a>placeOrder</h2>
+  <hr>
+  <p></p>
+  
+  <h3 class="section">URL</h3>
+  <code>//api/orders/{tableid}/place</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>POST</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="inline_response_200_2"><a href="">inline_response_200_2</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      
+      <span class="param-in">Path: </span>
+      
+      
+      <span class="param-name">tableid</span>
+      <span class="param-type">Integer</span>
+      
+      <p class="param-description"></p>
+	  </li>
+	  <li class="parameter">
+      
+      
+      
+      
+      <span class="param-in">Body: </span>
+      <span class="param-name">body</span>
+      <span class="param-type">Order(Order)</span>
+      
+      <p class="param-description">successful operation</p>
+	  </li>
+  </ul>
+  <h2><a name="removeDishFromOrder"></a>removeDishFromOrder</h2>
   <hr>
   <p></p>
   <p>Decrements dish quantity in order and/or deletes order</p>
   <h3 class="section">URL</h3>
-  <code>//orders/{orderid}/dish/{dishid}</code>
+  <code>//api/orders/{orderid}/dish/{dishid}</code>
   <h3 class="section">HTTP Method</h3>
   <code>DELETE</code>
   <h3 class="section">Response Type</h3>
@@ -70,54 +118,6 @@
       <span class="param-type">Integer</span>
       
       <p class="param-description"></p>
-	  </li>
-  </ul>
-  <h2><a name="ordersRemainingGet"></a>ordersRemainingGet</h2>
-  <hr>
-  <p></p>
-  
-  <h3 class="section">URL</h3>
-  <code>//orders/remaining</code>
-  <h3 class="section">HTTP Method</h3>
-  <code>GET</code>
-  <h3 class="section">Response Type</h3>
-  <div class="model" data-model="inline_response_200_2"><a href="">inline_response_200_2</a></div>
-  <h3 class="section">Parameters</h3>
-  <ul>
-  </ul>
-  <h2><a name="placeOrder"></a>placeOrder</h2>
-  <hr>
-  <p></p>
-  
-  <h3 class="section">URL</h3>
-  <code>//orders/{tableid}/place</code>
-  <h3 class="section">HTTP Method</h3>
-  <code>POST</code>
-  <h3 class="section">Response Type</h3>
-  <div class="model" data-model="inline_response_200_1"><a href="">inline_response_200_1</a></div>
-  <h3 class="section">Parameters</h3>
-  <ul>
-	  <li class="parameter">
-      
-      
-      <span class="param-in">Path: </span>
-      
-      
-      <span class="param-name">tableid</span>
-      <span class="param-type">Integer</span>
-      
-      <p class="param-description"></p>
-	  </li>
-	  <li class="parameter">
-      
-      
-      
-      
-      <span class="param-in">Body: </span>
-      <span class="param-name">body</span>
-      <span class="param-type">Order(Order)</span>
-      
-      <p class="param-description">successful operation</p>
 	  </li>
   </ul>
 </div>
