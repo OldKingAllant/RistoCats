@@ -68,7 +68,6 @@ server.use(async(req, resp, next) => {
 let users = require('./backend/routers/users');
 let menu = require('./backend/routers/menu')
 let orders = require('./backend/routers/orders')
-let user_pages = require('./backend/frontend_router')
 let tables = require('./backend/routers/table')
 
 //Route to verify if server is active, will always
@@ -130,7 +129,6 @@ server.use(async(req, resp, next) => {
 server.use('/users', users)
 server.use('/menu', menu)
 server.use('/orders', orders)
-server.use(user_pages)
 server.use('/tables', tables)
 
 //Middleware used to handle internal server errors to 
