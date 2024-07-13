@@ -18,10 +18,6 @@
   },
   "tags": [
     {
-      "name": "static",
-      "description": "Public and static files"
-    },
-    {
       "name": "alive",
       "description": "Verify if server is up"
     },
@@ -43,43 +39,7 @@
     }
   ],
   "paths": {
-    "/": {
-      "get": {
-        "summary": "Get index page",
-        "description": "Returns the index.html page",
-        "operationId": "getIndex",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "text/html": {}
-            }
-          }
-        }
-      }
-    },
-    "/static": {
-      "get": {
-        "tags": [
-          "static"
-        ],
-        "summary": "Get static public pages",
-        "description": "Provides access to static pages",
-        "operationId": "getStatic",
-        "responses": {
-          "200": {
-            "description": "The file",
-            "content": {
-              "text/html": {}
-            }
-          },
-          "404": {
-            "description": "File not found"
-          }
-        }
-      }
-    },
-    "/alive": {
+    "/api/alive": {
       "get": {
         "tags": [
           "alive"
@@ -104,7 +64,7 @@
         }
       }
     },
-    "/users/verify": {
+    "/api/users/verify": {
       "get": {
         "tags": [
           "users"
@@ -143,7 +103,7 @@
         }
       }
     },
-    "/users/loginurl": {
+    "/api/users/loginurl": {
       "get": {
         "tags": [
           "users"
@@ -165,14 +125,28 @@
         }
       }
     },
-    "/users/login": {
-      "get": {
+    "/api/users/login": {
+      "post": {
         "tags": [
           "users"
         ],
         "summary": "Perform login",
         "description": "Generates JWT and returns it",
         "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "jwt created",
@@ -198,21 +172,26 @@
         }
       }
     },
-    "/users/home": {
+    "/api/users/role": {
       "get": {
         "tags": [
           "users"
         ],
-        "summary": "Get home",
-        "description": "Returns the homepage of the logged in user",
-        "operationId": "getHome",
+        "summary": "Get user role",
+        "description": "Returns only the role of the user associated to the token",
+        "operationId": "getRole",
         "responses": {
-          "301": {
-            "description": "Redirect",
-            "headers": {
-              "Location": {
+          "200": {
+            "description": "Role retrieved",
+            "content": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -223,13 +202,13 @@
         }
       }
     },
-    "/menu/overview": {
+    "/api/menu/overview": {
       "get": {
         "tags": [
           "menu"
         ],
         "summary": "Menu",
-        "description": "Returns the current menu",
+        "description": "Returns the current menu or all dishes",
         "operationId": "getMenu",
         "parameters": [
           {
@@ -240,6 +219,15 @@
             "schema": {
               "type": "string",
               "example": "en"
+            }
+          },
+          {
+            "name": "filter_enable",
+            "in": "query",
+            "description": "If true, returns only dishes that are currently inserted in the menu",
+            "required": true,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -269,7 +257,7 @@
         }
       }
     },
-    "/menu/{dishid}/properties": {
+    "/api/menu/{dishid}/properties": {
       "get": {
         "tags": [
           "menu"
@@ -320,54 +308,8 @@
         }
       }
     },
-    "/menu/all_dishes": {
-      "get": {
-        "tags": [
-          "menu"
-        ],
-        "summary": "All dishes",
-        "description": "Get list of all dishes",
-        "operationId": "getAllDishes",
-        "parameters": [
-          {
-            "name": "lang",
-            "in": "query",
-            "description": "Language",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "en"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Retrieved all dishes",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Dish"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Missing lang param"
-          },
-          "401": {
-            "description": "Token invalid"
-          },
-          "403": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/menu/modify": {
-      "post": {
+    "/api/menu/modify": {
+      "put": {
         "tags": [
           "menu"
         ],
@@ -411,14 +353,25 @@
         }
       }
     },
-    "/tables/free": {
+    "/api/tables/overview": {
       "get": {
         "tags": [
           "tables"
         ],
-        "summary": "Get list of free tables",
+        "summary": "Get list of free or all tables",
+        "parameters": [
+          {
+            "name": "free",
+            "description": "If true, return only the free tables",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "description": "",
-        "operationId": "getFreeTables",
+        "operationId": "getTables",
         "responses": {
           "200": {
             "description": "OK",
@@ -442,8 +395,8 @@
         }
       }
     },
-    "/tables/{tableid}/status": {
-      "post": {
+    "/api/tables/{tableid}/status": {
+      "put": {
         "tags": [
           "tables"
         ],
@@ -494,7 +447,7 @@
         }
       }
     },
-    "/orders/{tableid}/place": {
+    "/api/orders/{tableid}/place": {
       "post": {
         "tags": [
           "orders"
@@ -550,12 +503,13 @@
         }
       }
     },
-    "/orders/remaining": {
+    "/api/orders/remaining": {
       "get": {
         "tags": [
           "orders"
         ],
         "summary": "Get incomplete orders",
+        "operationId": "getOrders",
         "responses": {
           "200": {
             "description": "ok",
@@ -584,12 +538,13 @@
         }
       }
     },
-    "/orders/{orderid}/details": {
+    "/api/orders/{orderid}/details": {
       "get": {
         "tags": [
           "orders"
         ],
         "summary": "Get order details",
+        "operationId": "getOrderDetails",
         "parameters": [
           {
             "name": "orderid",
@@ -625,13 +580,14 @@
         }
       }
     },
-    "/orders/{orderid}/dish/{dishid}": {
+    "/api/orders/{orderid}/dish/{dishid}": {
       "delete": {
         "tags": [
           "orders"
         ],
         "summary": "Modify order",
         "description": "Decrements dish quantity in order and/or deletes order",
+        "operationId": "removeDishFromOrder",
         "parameters": [
           {
             "name": "orderid",
@@ -661,37 +617,6 @@
         "responses": {
           "200": {
             "description": "ok"
-          },
-          "401": {
-            "description": "Token invalid"
-          },
-          "403": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/tables/all_tables": {
-      "get": {
-        "tags": [
-          "tables"
-        ],
-        "summary": "Get all tables",
-        "description": "",
-        "operationId": "getAllTables",
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Table"
-                  }
-                }
-              }
-            }
           },
           "401": {
             "description": "Token invalid"
