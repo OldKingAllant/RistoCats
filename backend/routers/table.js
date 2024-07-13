@@ -33,7 +33,7 @@ table.get('/overview', async(req, resp, next) => {
     }
 })
 
-table.post('/:id/status', async(req, resp, next) => {
+table.put('/:id/status', async(req, resp, next) => {
     try {
         if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
             resp.status(403)

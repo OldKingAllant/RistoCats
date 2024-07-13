@@ -246,10 +246,10 @@ describe('GET /menu/overview?filter_enable=false', async() => {
     })
 })
 
-describe('POST /menu/modify', async() => {
+describe('PUT /menu/modify', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .post('/api/menu/modify')
+        .put('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -259,7 +259,7 @@ describe('POST /menu/modify', async() => {
 
     it("Responds with 400, invalid request", async() => {
         const resp = await request(server)
-        .post('/api/menu/modify')
+        .put('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
@@ -271,7 +271,7 @@ describe('POST /menu/modify', async() => {
 
     it("Responds with 200, menu updated (invert enable property of the second dish)", async() => {
         const resp = await request(server)
-        .post('/api/menu/modify')
+        .put('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
@@ -421,10 +421,10 @@ describe('GET /tables/overview?free=false', async() => {
     })
 })
 
-describe('POST /tables/<table_id>/status', async() => {
+describe('PUT /tables/<table_id>/status', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-        .post(`/api/tables/1/status`)
+        .put(`/api/tables/1/status`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -434,7 +434,7 @@ describe('POST /tables/<table_id>/status', async() => {
 
     it('Responds with 400, malformed request', async() => {
         const resp = await request(server)
-        .post(`/api/tables/1/status`)
+        .put(`/api/tables/1/status`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -447,7 +447,7 @@ describe('POST /tables/<table_id>/status', async() => {
         let new_status = table1.free == true ? 'N' : 'Y';
 
         const resp = await request(server)
-        .post(`/api/tables/1/status`)
+        .put(`/api/tables/1/status`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')

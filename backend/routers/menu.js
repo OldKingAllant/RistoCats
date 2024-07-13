@@ -78,7 +78,7 @@ menu.get('/:id/properties', async(req, resp, next) => {
     }
 })
 
-menu.post('/modify', async(req, resp, next) => {
+menu.put('/modify', async(req, resp, next) => {
     try {
         if(req.user_role != 'admin' && req.user_role != 'kitchen') {
             resp.status(403)
