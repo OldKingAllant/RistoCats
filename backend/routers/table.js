@@ -1,7 +1,7 @@
 const express = require('express')
 let table = express.Router()
 
-table.get('/free', async(req, resp, next) => {
+table.get('/overview', async(req, resp, next) => {
     try {
         if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
             resp.status(403)
@@ -10,26 +10,20 @@ table.get('/free', async(req, resp, next) => {
             return;
         }
 
-        let result = await process.db_driver.getFreeTables();
-
-        resp.status(200)
-        .contentType('application/json')
-        .json({"list": result});
-    } catch(except) {
-        next(except);
-    }
-})
-
-table.get('/all_tables', async(req, resp, next) => {
-    try {
-        if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
-            resp.status(403)
+        if(req.query.free == undefined) {
+            resp.status(400)
             .contentType('application/json')
-            .json({"valid": false, "reason": "unauthorized"});
+            .json({"valid": false, "reason": "missing filter"});
             return;
         }
 
-        let result = await process.db_driver.getAllTables();
+        let result = [];
+
+        if(req.query.free == 'true') {
+            result = await process.db_driver.getFreeTables();
+        } else {
+            result = await process.db_driver.getAllTables();
+        }
 
         resp.status(200)
         .contentType('application/json')

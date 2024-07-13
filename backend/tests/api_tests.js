@@ -2,7 +2,6 @@ const { describe, afterEach } = require('node:test')
 const server = require('../../index')
 const request = require('supertest')
 const should = require('should')
-const jest = require('jest')
 const { default: expect } = require('expect')
 
 let token = ""; //Global token to perform most actions
@@ -24,7 +23,7 @@ let table1 = null;
 describe('POST /users/login', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-            .post('/users/login')
+            .post('/api/users/login')
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .send({"field1" : "empty"})
@@ -36,7 +35,7 @@ describe('POST /users/login', async() => {
 
     it('Responds with 200 ok', async() => {
         const resp = await request(server)
-            .post('/users/login')
+            .post('/api/users/login')
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .send({"token" : "token", "test": true})
@@ -52,7 +51,7 @@ describe('POST /users/login', async() => {
 describe('GET /users/verify', async() => {
     it('Responds with 401, missing token (empty query)', async() => {
         const resp = await request(server)
-            .get('/users/verify')
+            .get('/api/users/verify')
             .query({})
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .set('Accept', 'application/json')
@@ -64,7 +63,7 @@ describe('GET /users/verify', async() => {
 
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-            .get('/users/verify')
+            .get('/api/users/verify')
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .set('Accept', 'application/json')
             .query({"field1": "empty"});
@@ -76,7 +75,7 @@ describe('GET /users/verify', async() => {
 
     it('Responds with 200 ok', async() => {
         const resp = await request(server)
-            .get('/users/verify')
+            .get('/api/users/verify')
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .set('Accept', 'application/json')
             .query({"jwt": token});
@@ -87,11 +86,11 @@ describe('GET /users/verify', async() => {
     })
 })
 
-describe('GET /menu/overview', async() => {
+describe('GET /menu/overview?filter_enable=true', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-        .get('/menu/overview')
-        .query({"lang": "it"})
+        .get('/api/menu/overview')
+        .query({"lang": "it", "filter_enable": "true"})
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
 
@@ -102,8 +101,8 @@ describe('GET /menu/overview', async() => {
 
     it('Responds with 401, invalid token', async() => {
         const resp = await request(server)
-        .get('/menu/overview')
-        .query({"lang": "it"})
+        .get('/api/menu/overview')
+        .query({"lang": "it", "filter_enable": "true"})
         .set('Authorization', 'Bearer something')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -115,8 +114,8 @@ describe('GET /menu/overview', async() => {
 
     it('Responds with list of dishes', async() => {
         const resp = await request(server)
-        .get('/menu/overview')
-        .query({"lang": "it"})
+        .get('/api/menu/overview')
+        .query({"lang": "it", "filter_enable": "true"})
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -143,7 +142,7 @@ describe('GET /menu/overview', async() => {
 describe('GET /menu/<dish>/properties', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .get('/menu/overview')
+        .get('/api/menu/overview')
         .set('Authorization', 'Bearer something')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -156,7 +155,7 @@ describe('GET /menu/<dish>/properties', async() => {
         const wanted_dish = dish0.id;
 
         const resp = await request(server)
-        .get(`/menu/${wanted_dish}/properties`)
+        .get(`/api/menu/${wanted_dish}/properties`)
         .query({"lang": "it"})
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -177,7 +176,7 @@ describe('POST /orders/<table>/place', async() => {
 
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .post(`/orders/${table_id}/place`)
+        .post(`/api/orders/${table_id}/place`)
         .set('Authorization', 'Bearer something')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('Accept', 'application/json')
@@ -188,7 +187,7 @@ describe('POST /orders/<table>/place', async() => {
 
     it("Responds with 400, invalid dish list", async() => {
         const resp = await request(server)
-        .post(`/orders/${table_id}/place`)
+        .post(`/api/orders/${table_id}/place`)
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
@@ -202,7 +201,7 @@ describe('POST /orders/<table>/place', async() => {
         let dish = {"id": dish0.id, "quantity": 10, "infos": "blah blah blah"};
 
         const resp = await request(server)
-        .post(`/orders/${table_id}/place`)
+        .post(`/api/orders/${table_id}/place`)
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
@@ -216,13 +215,13 @@ describe('POST /orders/<table>/place', async() => {
     })
 })
 
-describe('GET /menu/all_dishes', async() => {
+describe('GET /menu/overview?filter_enable=false', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .get('/menu/all_dishes')
+        .get('/api/menu/overview')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
-        .query({"lang": "it"});
+        .query({"lang": "it", "filter_enable": "false"});
 
         expect(resp.status).toEqual(401);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
@@ -230,27 +229,27 @@ describe('GET /menu/all_dishes', async() => {
 
     it("Responds with 200, all dishes", async() => {
         const resp = await request(server)
-        .get('/menu/all_dishes')
+        .get('/api/menu/overview')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
-        .query({"lang": "en"});
+        .query({"lang": "en", "filter_enable": "false"});
 
         expect(resp.status).toEqual(200);
         expect(resp.headers['Content-Type'.toLowerCase()]).toContain('application/json');
-        expect(resp.body).toHaveProperty('list');
+        expect(resp.body).toHaveProperty('dishes');
 
-        console.log(`All dishes: ${resp.body.list.map(JSON.stringify)}`);
+        console.log(`All dishes: ${resp.body.dishes.map(JSON.stringify)}`);
 
-        dish1 = resp.body.list[1];
-        expect(resp.body.list.length).toBeGreaterThanOrEqual(2);
+        dish1 = resp.body.dishes[1];
+        expect(resp.body.dishes.length).toBeGreaterThanOrEqual(2);
     })
 })
 
 describe('POST /menu/modify', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .post('/menu/modify')
+        .post('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -260,7 +259,7 @@ describe('POST /menu/modify', async() => {
 
     it("Responds with 400, invalid request", async() => {
         const resp = await request(server)
-        .post('/menu/modify')
+        .post('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
@@ -272,7 +271,7 @@ describe('POST /menu/modify', async() => {
 
     it("Responds with 200, menu updated (invert enable property of the second dish)", async() => {
         const resp = await request(server)
-        .post('/menu/modify')
+        .post('/api/menu/modify')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
@@ -286,7 +285,7 @@ describe('POST /menu/modify', async() => {
 describe('GET /orders/remaining', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .get('/orders/remaining')
+        .get('/api/orders/remaining')
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -296,7 +295,7 @@ describe('GET /orders/remaining', async() => {
 
     it("Responds with 200, list of orders", async() => {
         const resp = await request(server)
-        .get('/orders/remaining')
+        .get('/api/orders/remaining')
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -309,7 +308,7 @@ describe('GET /orders/remaining', async() => {
 describe('GET /orders/<id>/details', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .get(`/orders/${orderid}/details`)
+        .get(`/api/orders/${orderid}/details`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -319,7 +318,7 @@ describe('GET /orders/<id>/details', async() => {
 
     it("Responds with 200, order details", async() => {
         const resp = await request(server)
-        .get(`/orders/${orderid}/details`)
+        .get(`/api/orders/${orderid}/details`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -332,7 +331,7 @@ describe('GET /orders/<id>/details', async() => {
 describe('DELETE /orders/<id>/dish/<dishid>', async() => {
     it("Responds with 401, missing/invalid token", async() => {
         const resp = await request(server)
-        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .delete(`/api/orders/${orderid}/dish/${dish0.id}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -342,7 +341,7 @@ describe('DELETE /orders/<id>/dish/<dishid>', async() => {
 
     it("Responds with 400, bad quantity", async() => {
         const resp = await request(server)
-        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .delete(`/api/orders/${orderid}/dish/${dish0.id}`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -353,7 +352,7 @@ describe('DELETE /orders/<id>/dish/<dishid>', async() => {
 
     it("Responds with 200, dish removed", async() => {
         const resp = await request(server)
-        .delete(`/orders/${orderid}/dish/${dish0.id}`)
+        .delete(`/api/orders/${orderid}/dish/${dish0.id}`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
@@ -364,10 +363,11 @@ describe('DELETE /orders/<id>/dish/<dishid>', async() => {
     })
 })
 
-describe('GET /tables/free', async() => {
+describe('GET /tables/overview?free=true', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-        .get(`/tables/free`)
+        .get(`/api/tables/overview`)
+        .query({'free': 'true'})
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -377,7 +377,8 @@ describe('GET /tables/free', async() => {
 
     it('Responds with 200, free tables', async() => {
         const resp = await request(server)
-        .get(`/tables/free`)
+        .get(`/api/tables/overview`)
+        .query({'free': 'true'})
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -390,10 +391,11 @@ describe('GET /tables/free', async() => {
     })
 })
 
-describe('GET /tables/all_tables', async() => {
+describe('GET /tables/overview?free=false', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-        .get(`/tables/all_tables`)
+        .get(`/api/tables/overview`)
+        .query({'free': 'false'})
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -403,7 +405,8 @@ describe('GET /tables/all_tables', async() => {
 
     it('Responds with 200, all tables', async() => {
         const resp = await request(server)
-        .get(`/tables/all_tables`)
+        .get(`/api/tables/overview`)
+        .query({'free': 'false'})
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -421,7 +424,7 @@ describe('GET /tables/all_tables', async() => {
 describe('POST /tables/<table_id>/status', async() => {
     it('Responds with 401, missing token', async() => {
         const resp = await request(server)
-        .post(`/tables/1/status`)
+        .post(`/api/tables/1/status`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
 
@@ -431,7 +434,7 @@ describe('POST /tables/<table_id>/status', async() => {
 
     it('Responds with 400, malformed request', async() => {
         const resp = await request(server)
-        .post(`/tables/1/status`)
+        .post(`/api/tables/1/status`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json');
@@ -444,7 +447,7 @@ describe('POST /tables/<table_id>/status', async() => {
         let new_status = table1.free == true ? 'N' : 'Y';
 
         const resp = await request(server)
-        .post(`/tables/1/status`)
+        .post(`/api/tables/1/status`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')

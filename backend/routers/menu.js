@@ -21,8 +21,21 @@ menu.get('/overview', async(req, resp, next) => {
             .json({"valid": false, "reason": "missing lang"});
             return;
         }
-        
-        let menu = await process.db_driver.getMenu(req.query.lang);
+
+        if(req.query.filter_enable == undefined) {
+            resp.status(400)
+            .contentType('application/json')
+            .json({"valid": false, "reason": "missing filter"});
+            return;
+        }
+
+        let menu = [];
+
+        if(req.query.filter_enable == 'true') {
+            menu = await process.db_driver.getMenu(req.query.lang);
+        } else {
+            menu = await process.db_driver.getAllDishes(req.query.lang);
+        }
 
         resp.status(200)
             .contentType('application/json')
@@ -60,34 +73,6 @@ menu.get('/:id/properties', async(req, resp, next) => {
         resp.status(200)
         .contentType('application/json')
         .json(dish);
-    } catch(except) {
-        next(except);
-    }
-})
-
-menu.get('/all_dishes', async(req, resp, next) => {
-    try {
-        if(req.user_role != 'admin' && req.user_role != 'dining_hall' &&
-            req.user_role != 'kitchen'
-        ) {
-            resp.status(403)
-            .contentType('application/json')
-            .json({"valid": false, "reason": "unauthorized"});
-            return;
-        }
-
-        if(req.query.lang == undefined) {
-            resp.status(400)
-            .contentType('application/json')
-            .json({"valid": false, "reason": "missing lang"});
-            return;
-        }
-
-        let all_dishes = await process.db_driver.getAllDishes(req.query.lang);
-
-        resp.status(200)
-        .contentType('application/json')
-        .json({"list": all_dishes});
     } catch(except) {
         next(except);
     }
