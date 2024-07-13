@@ -264,7 +264,7 @@ async function saveMod(){
     }
 
     const res = await fetch("/api/menu/modify", {           //fetch to modify the menu with the selected dishes
-        method: "POST",
+        method: "PUT",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,

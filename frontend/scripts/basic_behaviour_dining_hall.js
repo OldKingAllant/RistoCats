@@ -35,7 +35,7 @@ async function set_table_status(id, isfree){
 	console.log(sito);
 	
 	const res = await fetch(sito, {
-		method: "POST",
+		method: "PUT",
 		headers: myHeaders, 
 		body: JSON.stringify({
 			free: isfree ? 'Y' : "N"
