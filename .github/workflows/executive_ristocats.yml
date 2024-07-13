@@ -53,6 +53,18 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
+
+      - name: Add env file
+        run: |
+          touch .env
+          echo DB_ACCESS_STRING=${{ secrets.DB_ACCESS_STRING }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo TOKEN_TTL=${{ secrets.TOKEN_TTL }} >> .env
+          echo GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} >> .env
+          echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+          echo SERVER_URL=${{ secrets.SERVER_URL }} >> .env
       
       - name: Login to Azure
         uses: azure/login@v1
