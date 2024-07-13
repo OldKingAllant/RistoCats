@@ -182,7 +182,7 @@ window.onload = (ev) => {
     window.selected_lang = curr_lang;
 
     //Retrieve menu from /menu/overview
-    fetch(`/menu/overview?lang=${curr_lang}`, {
+    fetch(`/api/menu/overview?lang=${curr_lang}&filter_enable=true`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`
@@ -504,7 +504,7 @@ function place_order() {
 
     let id_table = window.localStorage.getItem('table_id');
 
-    fetch(`/orders/${id_table}/place`, {
+    fetch(`/api/orders/${id_table}/place`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
