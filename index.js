@@ -28,7 +28,15 @@ const server_path = __dirname;
 
 let verify = require('./backend/login/verify')
 
-server.use(favicon(__dirname + '/frontend/assets/images/ristotrositras.png'))
+const fs = require('fs')
+
+//To make the server work on a local copy of the backend branch,
+//avoid serving the favicon image if it does not exist (it should not exist
+// on that branch)
+let favicon_path = __dirname + '/frontend/assets/images/ristotrositras.png';
+if(fs.existsSync(favicon_path)) {
+    server.use(favicon(__dirname + '/frontend/assets/images/ristotrositras.png'))
+}
 
 server.use(cors())
 
@@ -73,7 +81,7 @@ let tables = require('./backend/routers/table')
 
 //Route to verify if server is active, will always
 //respond, not auth required
-server.get('/alive', (req, resp) => {
+server.get('/api/alive', (req, resp) => {
     resp.status(200)
         .contentType('application/json')
         .json({"status": "running"});
@@ -85,8 +93,8 @@ server.use(async(req, resp, next) => {
     const route = req.path;
 
     //Exclude routes that do not require auth
-    if(route == '/users/login' || route == '/users/verify' || route == '/alive' ||
-        route == '/users/loginurl'
+    if(route == '/api/users/login' || route == '/api/users/verify' || 
+       route == '/api/users/loginurl'
     ) {
         next();
         return;
@@ -127,10 +135,10 @@ server.use(async(req, resp, next) => {
 })
 
 //Set all other routes
-server.use('/users', users)
-server.use('/menu', menu)
-server.use('/orders', orders)
-server.use('/tables', tables)
+server.use('/api/users', users)
+server.use('/api/menu', menu)
+server.use('/api/orders', orders)
+server.use('/api/tables', tables)
 
 //Middleware used to handle internal server errors to 
 //not leak callstacks
