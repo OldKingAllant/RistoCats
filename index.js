@@ -16,7 +16,7 @@ let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
 const oauth_client = new google.Auth.OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    redirectUri: process.env.SERVER_URL + ':' + process.env.PORT + '/static/pages/login_redirect.html'
+    redirectUri: process.env.SERVER_URL + '/static/pages/login_redirect.html'
 })
 
 process.oauth_client = oauth_client;
