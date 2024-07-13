@@ -88,7 +88,7 @@
         function request_login_url() {
             let id_number = document.getElementById('id_number').value;
             window.localStorage.setItem('table_id', id_number);
-            fetch('/users/loginurl', {
+            fetch('/api/users/loginurl', {
                 method: 'GET'
             })
             .then(handle_response)

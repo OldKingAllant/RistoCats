@@ -88,7 +88,7 @@ async function fetchOrders(){
 
     let list = [];      //list of the orders
 
-        const res = await fetch("/orders/remaining", {                                      //fetch of orders
+        const res = await fetch("/api/orders/remaining", {                                      //fetch of orders
 			method: "GET",
 			headers: {
                 'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
@@ -120,7 +120,7 @@ async function orderdisplay(list){
     for(let i = 0; i < list.length; i++){                       //this for cycles through the various orders in the db
         for(let j = 0; j < list[i].dishes.length; j++){             //this for cycles through the dishes present in the currently selected order
 
-            const res = await fetch("/menu/"+list[i].dishes[j].id+"/properties?lang=en", {      //fetch of the dishes properties
+            const res = await fetch("/api/menu/"+list[i].dishes[j].id+"/properties?lang=en", {      //fetch of the dishes properties
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
@@ -163,7 +163,7 @@ async function orderdisplay(list){
 /*removes dish from the order list */
 async function removedish(id_order, id_dish, quantity){
 
-    const res = await fetch("/orders/"+id_order+"/dish/"+id_dish+"?quantity="+quantity, {   //the delete
+    const res = await fetch("/api/orders/"+id_order+"/dish/"+id_dish+"?quantity="+quantity, {   //the delete
             method: "DELETE",
             headers: {
                 'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
@@ -192,7 +192,7 @@ async function fetchMenu(){
 
     let list = [];
 
-    const res = await fetch("/menu/all_dishes?lang=en", {           //fetch of every dish in the db
+    const res = await fetch("/api/menu/overview?lang=en&filter_enable=false", {           //fetch of every dish in the db
         method: "GET",
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
@@ -207,7 +207,7 @@ async function fetchMenu(){
             alert("AN ERROR HAS OCURRED!");
         }
     } else {
-        list = ( await res.json()).list;
+        list = ( await res.json()).dishes;
     }
 
     console.log(JSON.stringify(list));
@@ -263,7 +263,7 @@ async function saveMod(){
         list.push({"id": iddish, "enable": skibidicheck});
     }
 
-    const res = await fetch("/menu/modify", {           //fetch to modify the menu with the selected dishes
+    const res = await fetch("/api/menu/modify", {           //fetch to modify the menu with the selected dishes
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
