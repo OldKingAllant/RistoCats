@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const DbDriver = require('./backend/database/driver')
 const cors = require('cors')
 const google = require('googleapis')
+const favicon = require('serve-favicon')
 
 //PUSH TEST 1
 
@@ -26,6 +27,8 @@ const server_port = process.env.PORT;
 const server_path = __dirname;
 
 let verify = require('./backend/login/verify')
+
+server.use(favicon(__dirname + '/frontend/assets/images/ristotrositras.png'))
 
 server.use(cors())
 
