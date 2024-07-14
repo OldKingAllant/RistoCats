@@ -15,14 +15,13 @@
                     }
                 })
                 .then((resp) => {
-                    let cloned = resp.clone();
-
                     resp.json()
                     .then((val)=> {
                         if(resp.status != 200) {
                             console.log(`Error: ${JSON.stringify(val)}`);
                             alert('An error occurred');
                         } else {
+                            //Redirect depending on role
                             console.log(JSON.stringify(val.role));
 
                             if(val.role == 'admin' || val.role == 'table') {
@@ -49,6 +48,7 @@
                     resp.json()
                         .then((body) => {
                             console.log(body.jwt);
+                            //Save in local storage and try to redirect to home
                             window.localStorage.setItem('jwt', body.jwt);
                             home_redirect(body.jwt);
                         })
