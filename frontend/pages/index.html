@@ -6,25 +6,38 @@
     <body>
         <script>
             async function home_redirect() {
-                const resp = await fetch('/users/home', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                redirect: "follow"
+                //Get user role
+                const resp = await fetch('/api/users/role', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    redirect: "follow"
                 });
 
                 if(resp.status == 401) {
+                    //Token was invalid
                     window.location.href = '/static/pages/login.html';
                 } else {
-                    if(resp.redirected)
-                        window.location.href = resp.url;
+                    resp.json()
+                        .then((body) => { 
+                            //Redirect depending on role
+                            console.log(JSON.stringify(body.role));
+
+                            if(body.role == 'admin' || body.role == 'table') {
+                                window.location.href = '/static/pages/customerview.html';
+                            } else if(body.role == 'kitchen') {
+                                window.location.href = '/static/pages/kitchen.html';
+                            } else {
+                                window.location.href = '/static/pages/dining_hall.html';
+                            }
+                         });
                 }
             }
 
             let token = window.localStorage.getItem('jwt');
 
-            if(token == null) {
+            if(token == null) { //Very simple redirect if the token is not present
                 window.location.href = '/static/pages/login.html';
             }
 

@@ -1,3 +1,4 @@
+//Same as always, scrolls the page until a certain item is visible
 function indexto(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -5,6 +6,7 @@ function indexto(elementId) {
     }
 }
 
+//This is also the same thing, show already existing popup
 function generatepopup(id, closer, note) {
     var modal = document.getElementById(id);
     var span = document.getElementsByClassName(closer)[0];
@@ -26,8 +28,11 @@ function generatepopup(id, closer, note) {
     
 }
 
+//This is actually unused, since the modify dish feature was 
+//abandoned some time ago
 var modifyButton = document.querySelector('.modify');
 
+//This is also associated to the same thing
 modifyButton.addEventListener('click', function() {
     var dialog = document.createElement('dialog');
     dialog.innerHTML = `
@@ -54,6 +59,7 @@ modifyButton.addEventListener('click', function() {
     });
 });
 
+//Other unused things
 var addNewButton = document.querySelector('.addnew');
 
 addNewButton.addEventListener('click', function() {
@@ -81,6 +87,7 @@ addNewButton.addEventListener('click', function() {
         dialog.close();
     });
 });
+/////////////////////////////
 
 
 /*fetches the orders and puts them in a list*/
@@ -88,11 +95,11 @@ async function fetchOrders(){
 
     let list = [];      //list of the orders
 
-        const res = await fetch("/api/orders/remaining", {                                      //fetch of orders
-			method: "GET",
-			headers: {
-                'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
-            }
+    const res = await fetch("/api/orders/remaining", {                                      //fetch of orders
+		method: "GET",
+		headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem('jwt')}`,
+        }
 	});
 
 	const statusCode = res.status;
