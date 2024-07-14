@@ -1,8 +1,16 @@
 const express = require('express')
 let table = express.Router()
 
+/**
+ * Retrieve all/free tables
+ * 
+ * Accessible by:
+ * - Admin
+ * - Dining hall
+ */
 table.get('/overview', async(req, resp, next) => {
     try {
+        //Check role
         if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
             resp.status(403)
             .contentType('application/json')
@@ -10,6 +18,7 @@ table.get('/overview', async(req, resp, next) => {
             return;
         }
 
+        //The 'free' query param is necessary
         if(req.query.free == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -20,8 +29,10 @@ table.get('/overview', async(req, resp, next) => {
         let result = [];
 
         if(req.query.free == 'true') {
+            //If 'free' is true, filter all tables searching for free ones
             result = await process.db_driver.getFreeTables();
         } else {
+            //Return all tables
             result = await process.db_driver.getAllTables();
         }
 
@@ -33,8 +44,16 @@ table.get('/overview', async(req, resp, next) => {
     }
 })
 
+/**
+ * Change table status to 'available' or 'uccupied'
+ * 
+ * Accessible by:
+ * - Admin
+ * - Dining hall
+ */
 table.put('/:id/status', async(req, resp, next) => {
     try {
+        //Check
         if(req.user_role != 'admin' && req.user_role != 'dining_hall') {
             resp.status(403)
             .contentType('application/json')
@@ -42,6 +61,7 @@ table.put('/:id/status', async(req, resp, next) => {
             return;
         }
         
+        //Table id is required
         if(isNaN(Number(req.params.id))) {
             resp.status(400)
             .contentType('application/json')
@@ -49,6 +69,7 @@ table.put('/:id/status', async(req, resp, next) => {
             return;
         }
 
+        //Check request format
         if(req.body.free == undefined || (req.body.free != 'Y' &&
             req.body.free != 'N'
         )) {
@@ -58,6 +79,7 @@ table.put('/:id/status', async(req, resp, next) => {
             return;
         }
 
+        //Update status
         let result = await process.db_driver.setTableStatus(Number(req.params.id), 
         req.body.free == 'Y');
 

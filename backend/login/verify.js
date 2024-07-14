@@ -47,6 +47,7 @@ async function extract_token_payload(token) {
  */
 async function verify_google_token(token, mail) {
     try {
+        //Check that the database mail and the google mail match
         let payload = await extract_token_payload(token);
 
         if(payload.mail != mail) {
@@ -70,15 +71,18 @@ async function verify_google_token(token, mail) {
  */
 async function verify_token(token, the_secret) {
     let decoded = null;
+    //First decode the JWT
     try { decoded = jwt.verify(token, the_secret) }
     catch(except) {
         return false;
     }
 
+    //Check database
     if(!verify_mail(decoded)) {
         return false;
     }
 
+    //If the JWT is not used for testing, verify the google ID token
     if(!decoded.test && !(await verify_google_token(decoded.google_token, decoded.mail))) {
         return false;
     }
