@@ -7,10 +7,10 @@ function indexto(elementId) {
     }
 }
 
-let is_dish = false;
-let dish_index = 0;
-let dish_notes = {};
-let order_list = {};
+let is_dish = false; //Used to understand if the dialog was opened by a notes button
+let dish_index = 0;  //Dish index in the global list associated to the notes button that was clicked
+let dish_notes = {}; //Global dict of all notes (dish_index: note)
+let order_list = {}; //Global dict containing dishes and quantities (dish_index: quant)
 
 /**
  * Bring popup modal into view
@@ -24,7 +24,7 @@ function generatepopup(id, closer) {
     let notes = "";
 
     if(dish_notes[dish_index] != undefined) {
-        notes = dish_notes[dish_index];
+        notes = dish_notes[dish_index]; //Retrieve old saved notes if present
     }
 
     let text_area = document.getElementById('submitted_text');
@@ -48,6 +48,7 @@ function generatepopup(id, closer) {
 
     window.onclick = function(event) {
         if (event.target == modal) {
+            //Same as above
             modal.style.display = 'none';
             if (is_dish){
                 is_dish = false;
@@ -153,10 +154,12 @@ function create_menu_entries(menu) {
         }
     }
 
+    //Recompute previous subtotal
     compute_subtotal();
 }
 
 window.onload = (ev) => {
+    //Check if table id exists and is valid
     let table = window.localStorage.getItem('table_id');
 
     if(table == null || isNaN(table) || table == "") {
@@ -172,6 +175,7 @@ window.onload = (ev) => {
     console.log(`Selected lang: ${curr_lang}`);
 
     if(curr_lang == null) {
+        //Default to english
         lang_img.src = '/static/assets/images/en_flag.png';
     } else {
         let img_name = `/static/assets/images/${curr_lang}_flag.png`;
@@ -401,6 +405,12 @@ function change_lang() {
     list_popup.style.display = 'block';
 }
 
+/**
+ * Adds a dish to the order, adding a dictionary
+ * entry if not already present
+ * 
+ * @param {*} index Dish index in the global array
+ */
 function add_to_order(index) {
     if (order_list[index] == undefined) {
         //Add to list and generate total entry at the 
@@ -435,10 +445,16 @@ function add_to_order(index) {
     window.localStorage.setItem('current_order', JSON.stringify(order_list));
 }
 
+/**
+ * Decrements dish quantity in order dictionary or
+ * removes the entry alltogether
+ * 
+ * @param {*} index Dish index in global array
+ */
 function remove_from_order(index) {
     let counter = document.getElementById(`counter_${index}`);
-    if (order_list[index] != undefined && order_list[index] > 0) {
-        order_list[index] -= 1;
+    if (order_list[index] != undefined && order_list[index] > 0) { //Check if dish is present
+        order_list[index] -= 1;  //Decrement quantity
         if (order_list[index] == 0) {
             //Remove from list and remove total entry
             let total_entry = document.getElementById(`total_entry_${index}`);
@@ -465,6 +481,10 @@ function remove_from_order(index) {
     window.localStorage.setItem('current_notes', JSON.stringify(dish_notes));
 }
 
+/**
+ * Forcefully remove session data regarding the order
+ * and reload the page
+ */
 function clear_order() {
     window.localStorage.removeItem('current_order');
     window.localStorage.removeItem('current_notes');
@@ -502,6 +522,7 @@ function place_order() {
         return;
     }
 
+    //Retrieve table id for placing the order
     let id_table = window.localStorage.getItem('table_id');
 
     fetch(`/api/orders/${id_table}/place`, {
