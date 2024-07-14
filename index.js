@@ -6,8 +6,6 @@ const cors = require('cors')
 const google = require('googleapis')
 const favicon = require('serve-favicon')
 
-//PUSH TEST 1
-
 /**
  * Create database driver and Google OAuth client
  * and save them in global variables
@@ -17,7 +15,8 @@ let driver = new DbDriver(process.env.DB_ACCESS_STRING, process.env.DB_NAME);
 const oauth_client = new google.Auth.OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    redirectUri: process.env.SERVER_URL + '/static/pages/login_redirect.html'
+    redirectUri: process.env.SERVER_URL + '/static/pages/login_redirect.html' //Generate redirect URL (if the server is listening on a port != 80, remember to 
+                                                                              //put it in the SERVER_URL env variable)
 })
 
 process.oauth_client = oauth_client;
@@ -26,6 +25,7 @@ const server = express()
 const server_port = process.env.PORT;
 const server_path = __dirname;
 
+//Module used for token verification
 let verify = require('./backend/login/verify')
 
 const fs = require('fs')
@@ -45,7 +45,8 @@ server.use('/', async(req, resp, next) => {
     if(req.path != '/') {
         next();
     } else {
-        resp.sendFile(__dirname + '/frontend/pages/index.html');
+        //Serve index for root path
+        resp.sendFile(__dirname + '/frontend/pages/index.html'); 
     }
 })
 
@@ -74,13 +75,13 @@ server.use(async(req, resp, next) => {
     next();
 })
 
-let users = require('./backend/routers/users');
-let menu = require('./backend/routers/menu')
-let orders = require('./backend/routers/orders')
-let tables = require('./backend/routers/table')
+let users = require('./backend/routers/users'); // /api/users router
+let menu = require('./backend/routers/menu')    // /api/menu router
+let orders = require('./backend/routers/orders')// /api/orders router
+let tables = require('./backend/routers/table') // /api/tables router
 
 //Route to verify if server is active, will always
-//respond, not auth required
+//respond, no auth required
 server.get('/api/alive', (req, resp) => {
     resp.status(200)
         .contentType('application/json')
@@ -108,6 +109,7 @@ server.use(async(req, resp, next) => {
         return;
     }
 
+    //Split string between 'Bearer' and the token
     let authorization = req.headers['authorization'].split(' ');
     let type = authorization[0];
 
@@ -129,6 +131,7 @@ server.use(async(req, resp, next) => {
         return;
     }
 
+    //Save role in global variable for easy access
     req.user_role = token_or_err.role;
 
     next();
@@ -155,4 +158,5 @@ server.listen(server_port, () => {
     console.log(`Server path ${server_path}`);
 })
 
+//This export is used for testing
 module.exports = server

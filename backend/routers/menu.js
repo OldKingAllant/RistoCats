@@ -2,17 +2,13 @@ const express = require('express')
 let menu = express.Router()
 
 /**
- * Route used to retrive active menu
+ * Route used to retrive menu
+ * 
+ * Accessible by all users
  */
 menu.get('/overview', async(req, resp, next) => {
     try {
-        //Check roles 
-        if(req.user_role != 'admin' && req.user_role != 'table') {
-            resp.status(403)
-            .contentType('application/json')
-            .json({"valid": false, "reason": "unauthorized"});
-            return;
-        }
+        //Do not check roles, access is unrestricted
 
         //lang parameter is required
         if(req.query.lang == undefined) {
@@ -22,6 +18,7 @@ menu.get('/overview', async(req, resp, next) => {
             return;
         }
 
+        //The filter for enabled dishes is required
         if(req.query.filter_enable == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -32,8 +29,11 @@ menu.get('/overview', async(req, resp, next) => {
         let menu = [];
 
         if(req.query.filter_enable == 'true') {
+            //If the filter is enabled, get only dishes
+            //currently inserted in the menu
             menu = await process.db_driver.getMenu(req.query.lang);
         } else {
+            //Retrieved all dishes
             menu = await process.db_driver.getAllDishes(req.query.lang);
         }
 
@@ -45,6 +45,13 @@ menu.get('/overview', async(req, resp, next) => {
     }
 })
 
+/**
+ * Get properties of a single dish 
+ * 
+ * Accessible by:
+ * - Admin
+ * - Table
+ */
 menu.get('/:id/properties', async(req, resp, next) => {
     try {
         if(req.user_role != 'admin' && req.user_role != 'table' && req.user_role != 'kitchen') {
@@ -54,6 +61,7 @@ menu.get('/:id/properties', async(req, resp, next) => {
             return;
         }
 
+        //Obviously, dish id is required
         if(req.params.id == null || req.params.id == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -61,6 +69,7 @@ menu.get('/:id/properties', async(req, resp, next) => {
             return;
         }
 
+        //Check if language parameter is defined
         if(req.query.lang == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -68,6 +77,7 @@ menu.get('/:id/properties', async(req, resp, next) => {
             return;
         }
 
+        //Retrieve dish descriptor
         let dish = await process.db_driver.getDish(req.params.id, req.query.lang);
 
         resp.status(200)
@@ -78,8 +88,16 @@ menu.get('/:id/properties', async(req, resp, next) => {
     }
 })
 
+/**
+ * Update/modify the menu
+ * 
+ * Accessible by:
+ * - Admin
+ * - Kitchen
+ */
 menu.put('/modify', async(req, resp, next) => {
     try {
+        //Check role
         if(req.user_role != 'admin' && req.user_role != 'kitchen') {
             resp.status(403)
             .contentType('application/json')
@@ -87,6 +105,7 @@ menu.put('/modify', async(req, resp, next) => {
             return;
         }
 
+        //Get update list
         if(req.body.list == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -115,6 +134,7 @@ menu.put('/modify', async(req, resp, next) => {
                 dish.enable == 'Y'
             );
 
+            //Bail out if a single failure happens (no rollback done)
             if(!result) {
                 resp.status(400)
                 .contentType('application/json')
