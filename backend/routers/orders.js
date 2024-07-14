@@ -9,8 +9,16 @@ function verify_dish(dish, menu) {
     return menu.find((elem) => elem.id == dish.id) != null;
 }
 
+/**
+ * Place an order
+ * 
+ * Accessible by:
+ * - Admin
+ * - Table
+ */
 orders.post('/:tableid/place', async(req, resp, next) => {
     try {
+        //Check role
         if(req.user_role != 'admin' && req.user_role != 'table') {
             resp.status(403)
             .contentType('application/json')
@@ -18,6 +26,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
+        //Check if order is present
         if(req.body == undefined || req.body == null || req.body.dishes == undefined) {
             resp.status(400)
             .contentType('application/json')
@@ -25,6 +34,7 @@ orders.post('/:tableid/place', async(req, resp, next) => {
             return;
         }
 
+        //Table id is required
         if(req.params.tableid == undefined || req.params.tableid == null) {
             resp.status(400)
             .contentType('application/json')
@@ -42,8 +52,10 @@ orders.post('/:tableid/place', async(req, resp, next) => {
         //Retrieve menu and verify against order
         let menu = await process.db_driver.getMenu(req.query.lang);
 
+        //Check if order formar is correct 
         let all_respect_format = req.body.dishes.every((elem) => verify_dish(elem, menu));
 
+        //Bail out if not
         if(!all_respect_format) {
             resp.status(400)
             .contentType('application/json')
@@ -79,8 +91,18 @@ orders.post('/:tableid/place', async(req, resp, next) => {
     }
 })
 
+/**
+ * Get all orders (this application only keeps track 
+ * of orders that have not yet been completed, completed orders
+ * are simply remove)
+ * 
+ * Accessible by:
+ * - Admin
+ * - Kitchen
+ */
 orders.get('/remaining', async(req, resp, next) => {
     try {
+        //Check role
         if(req.user_role != 'admin' && req.user_role != 'kitchen') {
             resp.status(403)
             .contentType('application/json')
@@ -88,6 +110,7 @@ orders.get('/remaining', async(req, resp, next) => {
             return;
         }
 
+        //Retrieve orders
         let orders = await process.db_driver.getOrders();
 
         resp.status(200)
@@ -98,8 +121,16 @@ orders.get('/remaining', async(req, resp, next) => {
     }
 })
 
+/**
+ * Get details of a single order
+ * 
+ * Accessible by:
+ * - Admin 
+ * - Kitchen
+ */
 orders.get('/:id/details', async(req, resp, next) => {
     try {
+        //Check role
         if(req.user_role != 'admin' && req.user_role != 'kitchen') {
             resp.status(403)
             .contentType('application/json')
@@ -107,6 +138,7 @@ orders.get('/:id/details', async(req, resp, next) => {
             return;
         }
 
+        //Retrieve order
         let order = await process.db_driver.getOrderDetails(req.params.id);
 
         if(order == null) {
@@ -123,8 +155,16 @@ orders.get('/:id/details', async(req, resp, next) => {
     }
 })
 
+/**
+ * Remove dish from order, remove order if no dishes remain
+ * 
+ * Accessible by:
+ * - Admin
+ * - Kitchen
+ */
 orders.delete('/:id/dish/:dishid', async(req, resp, next) => {
     try {
+        //Check roles
         if(req.user_role != 'admin' && req.user_role != 'kitchen') {
             resp.status(403)
             .contentType('application/json')
@@ -132,15 +172,18 @@ orders.delete('/:id/dish/:dishid', async(req, resp, next) => {
             return;
         }
 
+        //Check if quantity exists and is a valid number
         let quantity = req.query.quantity;
+        let quant_num = Number(quantity);
 
-        if(isNaN(Number(quantity))) {
+        if(isNaN(quant_num) || quant_num <= 0 || !Number.isInteger(quant_num)) {
             resp.status(400)
             .contentType('application/json')
             .json({"valid": false, "reason": "bad quantity"});
             return;
         }
  
+        //Apply modification
         let result = await process.db_driver.removeDishFromOrder(req.params.id, 
             req.params.dishid, Number(quantity)
         );
